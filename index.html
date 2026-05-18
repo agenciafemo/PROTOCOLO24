@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolo 24 | Pacientes Particulares Todos os Dias</title>
+    
+    <!-- Importando o Tailwind CSS para estilização rápida -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Swiper.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        // Configuração da paleta de cores customizada no Tailwind
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-gold': '#eba136',
+                        'brand-brown': '#684a29',
+                        'brand-medium': '#a98360',
+                        'brand-dark': '#2e200c',
+                        'brand-light': '#e3e2de',
+                        'white': '#ffffff',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Smooth scroll para links âncora */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Classes para animação de fade-in no scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Estilos para o Slider Contínuo (Infinite Marquee) */
+        .pain-carousel {
+            /* Máscara de gradiente para criar o efeito de fade nas bordas (desktop) */
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+        }
+        @media (max-width: 768px) {
+            .pain-carousel {
+                /* Ajuste da máscara para mobile (menos área de fade para preservar o centro) */
+                -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+                mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+            }
+        }
+        .pain-carousel .swiper-wrapper {
+            /* Transição linear para movimento sem solavancos */
+            transition-timing-function: linear !important;
+        }
+        .pain-carousel .swiper-slide {
+            width: 280px; /* Largura padrão mobile */
+            opacity: 0.4;
+            transform: scale(0.85);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            height: auto;
+        }
+        @media (min-width: 768px) {
+            .pain-carousel .swiper-slide {
+                width: 400px; /* Largura desktop */
+            }
+        }
+        .pain-carousel .swiper-slide-active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Estilos para as estrelas decorativas */
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); opacity: 0.15; }
+            25% { transform: translate(20px, 40px); opacity: 0.65; }
+            50% { transform: translate(-30px, 10px); opacity: 0.3; }
+            75% { transform: translate(10px, -30px); opacity: 0.75; }
+            100% { transform: translate(0, 0); opacity: 0.15; }
+        }
+
+        .star1 { top: 10%; left: 15%; width: 8px; height: 8px; background-color: #eba136; animation-delay: -2s; animation-duration: 25s; }
+        .star2 { top: 20%; right: 10%; width: 5px; height: 5px; background-color: #a98360; animation-delay: -8s; animation-duration: 22s; }
+        .star3 { bottom: 40%; left: 25%; width: 6px; height: 6px; background-color: #a98360; animation-delay: -5s; animation-duration: 18s; }
+        .star4 { bottom: 25%; right: 20%; width: 7px; height: 7px; background-color: #eba136; animation-delay: -12s; animation-duration: 28s; }
+        .star5 { top: 50%; left: 5%; width: 4px; height: 4px; background-color: #eba136; animation-delay: -1s; animation-duration: 15s; }
+        .star6 { top: 70%; right: 30%; width: 5px; height: 5px; background-color: #a98360; animation-delay: -15s; animation-duration: 20s; }
+        .star7 { top: 15%; left: 80%; width: 6px; height: 6px; background-color: #eba136; animation-delay: -7s; animation-duration: 24s; }
+        .star8 { bottom: 15%; left: 10%; width: 4px; height: 4px; background-color: #a98360; animation-delay: -3s; animation-duration: 19s; }
+        .star9 { top: 40%; right: 15%; width: 7px; height: 7px; background-color: #eba136; animation-delay: -10s; animation-duration: 27s; }
+        .star10 { bottom: 30%; right: 5%; width: 5px; height: 5px; background-color: #a98360; animation-delay: -14s; animation-duration: 21s; }
+        .star11 { top: 60%; left: 20%; width: 8px; height: 8px; background-color: #a98360; animation-delay: -6s; animation-duration: 26s; }
+        .star12 { top: 80%; right: 40%; width: 6px; height: 6px; background-color: #eba136; animation-delay: -11s; animation-duration: 23s; }
+        /* Novas estrelas focadas no topo */
+        .star13 { top: 12%; right: 25%; width: 6px; height: 6px; background-color: #eba136; animation-delay: -4s; animation-duration: 21s; }
+        .star14 { top: 8%; left: 35%; width: 4px; height: 4px; background-color: #a98360; animation-delay: -9s; animation-duration: 19s; }
+        .star15 { top: 28%; left: 8%; width: 7px; height: 7px; background-color: #eba136; animation-delay: -1s; animation-duration: 26s; }
+        .star16 { top: 35%; right: 8%; width: 5px; height: 5px; background-color: #a98360; animation-delay: -13s; animation-duration: 24s; }
+        .star17 { top: 18%; left: 50%; width: 9px; height: 9px; background-color: #eba136; animation-delay: -6s; animation-duration: 29s; }
+        .star18 { top: 5%; right: 45%; width: 5px; height: 5px; background-color: #a98360; animation-delay: -16s; animation-duration: 20s; }
+    </style>
+</head>
+<body class="bg-brand-light text-brand-dark font-sans">
+
+    <!-- NAVBAR -->
+    <header id="navbar" class="w-[calc(100%-2rem)] max-w-6xl mx-auto mt-4 sticky top-4 z-50 bg-brand-light/90 backdrop-blur-md border border-brand-medium/20 rounded-2xl shadow-2xl shadow-brand-dark/10 transition-all duration-300">
+        <div class="px-6 md:px-8 py-4 flex justify-between items-center w-full">
+            <a href="#hero" class="logo font-extrabold text-2xl text-brand-dark tracking-tight hover:text-brand-gold transition-colors">P24</a>
+
+            <nav class="hidden md:flex space-x-4 lg:space-x-6 overflow-x-auto">
+                <a href="#como-lotar" class="text-brand-brown hover:text-brand-gold font-semibold transition-colors text-xs lg:text-sm whitespace-nowrap">Desafios</a>
+                <a href="#como-funciona" class="text-brand-brown hover:text-brand-gold font-semibold transition-colors text-xs lg:text-sm whitespace-nowrap">Como Funciona</a>
+                <a href="#quem-esta-por-tras" class="text-brand-brown hover:text-brand-gold font-semibold transition-colors text-xs lg:text-sm whitespace-nowrap">Quem Somos</a>
+                <a href="#passo-a-passo" class="text-brand-brown hover:text-brand-gold font-semibold transition-colors text-xs lg:text-sm whitespace-nowrap">Passo a Passo</a>
+                <a href="#resultados" class="text-brand-brown hover:text-brand-gold font-semibold transition-colors text-xs lg:text-sm whitespace-nowrap">Resultados</a>
+                <a href="#oferta" class="text-brand-brown hover:text-brand-gold font-semibold transition-colors text-xs lg:text-sm whitespace-nowrap">Protocolo 24</a>
+            </nav>
+
+            <a href="form.html" class="hidden md:inline-block bg-brand-gold text-brand-dark font-bold py-2 px-6 rounded-lg shadow-md shadow-brand-gold/30 transition-transform transform hover:scale-105">
+                Formulário
+            </a>
+            
+            <!-- Menu Mobile (Ícone) -->
+            <button class="md:hidden text-brand-dark"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+        </div>
+    </header>
+
+    <!-- SEÇÃO 1: HERO -->
+    <main id="hero" class="bg-brand-light relative overflow-hidden">
+            <!-- Container das Estrelas Decorativas -->
+            <div class="absolute inset-0 z-0 pointer-events-none">
+                <span class="star star1"></span>
+                <span class="star star2"></span>
+                <span class="star star3"></span>
+                <span class="star star4"></span>
+                <span class="star star5"></span>
+                <span class="star star6"></span>
+                <span class="star star7"></span>
+                <span class="star star8"></span>
+                <span class="star star9"></span>
+                <span class="star star10"></span>
+                <span class="star star11"></span>
+                <span class="star star12"></span>
+                <span class="star star13"></span>
+                <span class="star star14"></span>
+                <span class="star star15"></span>
+                <span class="star star16"></span>
+                <span class="star star17"></span>
+                <span class="star star18"></span>
+            </div>
+
+        <div class="container mx-auto px-6 py-16 md:py-24 relative z-10 reveal">
+            <div class="grid lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+                <!-- Coluna de Texto (Esquerda) -->
+                <div class="lg:col-span-7 text-center lg:text-left flex flex-col justify-center">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 max-w-4xl mx-auto lg:mx-0">
+                        Ative seus pacientes e crie <span class="bg-gradient-to-r from-brand-brown via-brand-medium to-brand-gold bg-clip-text text-transparent">receita&nbsp;previsível.</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-brand-brown mb-10 max-w-2xl mx-auto lg:mx-0">
+                        Transforme pacientes existentes em receita mensalmente previsível com protocolos e tráfego estratégico.
+                    </p>
+
+                    <!-- CTA Principal -->
+                    <a href="form.html" class="inline-block self-center lg:self-start bg-brand-gold text-brand-dark font-bold text-xl py-4 px-12 rounded-lg shadow-lg shadow-brand-gold/30 transition-transform transform hover:scale-105">
+                        QUERO LANÇAR MEU PROTOCOLO
+                    </a>
+                    <p class="mt-4 text-sm text-brand-brown">Validado com profissionais de saúde que já geraram receita recorrente.</p>
+                </div>
+
+                <!-- Coluna do Vídeo (Direita) -->
+                <div class="lg:col-span-5 relative w-full max-w-[360px] mx-auto lg:ml-auto group mt-12 lg:mt-0">
+                    <!-- Efeito de brilho suave atrás do vídeo (Glow) -->
+                    <div class="absolute -inset-2 bg-gradient-to-tr from-brand-gold via-brand-medium to-brand-brown rounded-3xl blur-lg opacity-30 group-hover:opacity-60 transition duration-700"></div>
+                    
+                    <!-- Moldura Premium e Container Principal -->
+                    <div class="relative bg-gradient-to-b from-brand-brown to-brand-dark p-1.5 rounded-[28px] shadow-2xl border border-brand-gold/40">
+                        <div class="relative rounded-[22px] overflow-hidden aspect-[9/16] border border-black/40 shadow-inner">
+                            <video
+                                id="heroVideo" controls muted playsinline preload="auto" autoplay loop
+                                class="w-full h-full absolute inset-0 object-cover bg-black">
+                                <source src="Beatriz Ghedin_resultado_vídeo.mp4" type="video/mp4">
+                                Seu navegador não suporta o elemento de vídeo.
+                            </video>
+                            
+                            <!-- Controle de Som Customizado -->
+                            <button id="muteToggleBtn" class="absolute top-4 right-4 z-30 w-10 h-10 flex items-center justify-center rounded-full bg-brand-dark/70 backdrop-blur-md border border-brand-gold/40 shadow-[0_4px_12px_rgba(0,0,0,0.5)] text-brand-gold hover:bg-brand-dark/90 hover:scale-105 active:scale-95 transition-all duration-300" aria-label="Alternar som">
+                                <!-- Ícone Muted -->
+                                <svg id="iconMuted" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
+                                </svg>
+                                <!-- Ícone Unmuted -->
+                                <svg id="iconUnmuted" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Selo de Resultado Real (Badge) -->
+                        <div class="absolute -top-5 -right-2 md:-right-6 bg-brand-light border border-brand-gold/50 shadow-xl px-4 py-2 rounded-full flex items-center gap-2 transform group-hover:scale-105 transition-transform duration-300 z-20">
+                            <span class="flex-shrink-0 w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
+                            <span class="text-xs font-bold text-brand-dark uppercase tracking-wide whitespace-nowrap">Resultado Real</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- SEÇÃO 2: DOR -->
+    <section id="como-lotar" class="bg-white py-20 overflow-hidden">
+        <div class="container mx-auto px-6 text-center reveal">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-brand-dark">O Desafio dos Consultórios</h2>
+            <p class="text-lg text-brand-brown mb-12 max-w-2xl mx-auto">Reconhece algum destes cenários em seu consultório?</p>
+        </div>
+
+        <!-- Início do Carrossel de Dores (Largura Total) -->
+        <div class="swiper pain-carousel w-full pb-10 mt-6 reveal">
+            <div class="swiper-wrapper items-center">
+                <!-- Slides serão inseridos aqui via JavaScript -->
+            </div>
+        </div>
+        <!-- Fim do Carrossel -->
+
+    </section>
+
+    <!-- SEÇÃO 3: COMO FUNCIONA (VÍDEO) -->
+    <section id="como-funciona" class="bg-brand-light py-24">
+        <div class="container mx-auto px-6 reveal">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-brand-dark"><span class="bg-gradient-to-r from-brand-brown via-brand-medium to-brand-gold bg-clip-text text-transparent">O Método</span> em Ação</h2>
+            </div>
+
+            <div class="relative max-w-4xl mx-auto group">
+                <!-- Efeito de brilho suave atrás do vídeo (Glow) -->
+                <div class="absolute -inset-2 bg-gradient-to-r from-brand-gold via-brand-medium to-brand-brown rounded-3xl blur-lg opacity-30 group-hover:opacity-60 transition duration-700"></div>
+
+                <!-- Moldura Premium e Container Principal (16:9) -->
+                <div class="relative bg-gradient-to-b from-brand-brown to-brand-dark p-1.5 rounded-[28px] shadow-2xl border border-brand-gold/40">
+                    <div class="relative rounded-[22px] overflow-hidden aspect-video border border-black/40 shadow-inner bg-black flex items-center justify-center">
+                        <video
+                            id="mainVideo"
+                            controls playsinline preload="metadata"
+                            class="w-full h-full absolute inset-0 object-cover">
+                            <source src="videofernanda.mp4" type="video/mp4">
+                            Seu navegador não suporta o elemento de vídeo.
+                        </video>
+
+                        <!-- Timeline animada de progresso rápido -->
+                        <div class="absolute bottom-12 left-0 w-full h-1 bg-gray-800 z-50" id="videoTimeline" style="display: none;">
+                            <div class="h-full bg-gradient-to-r from-brand-gold to-brand-medium" id="videoProgressBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                @keyframes videoProgressFast {
+                    0% { width: 0%; }
+                    100% { width: 30%; }
+                }
+
+                @keyframes videoProgressSlow {
+                    0% { width: 30%; }
+                    100% { width: 100%; }
+                }
+
+                #videoProgressBar.playing-fast {
+                    animation: videoProgressFast 2s ease-out forwards;
+                }
+
+                #videoProgressBar.playing-slow {
+                    animation: videoProgressSlow 1s linear forwards;
+                }
+
+                /* Ocultar a barra de progresso padrão do vídeo */
+                #mainVideo::-webkit-media-controls-panel {
+                    background: transparent;
+                }
+
+                #mainVideo::-moz-range-track {
+                    display: none;
+                }
+
+                #mainVideo::-webkit-media-controls-timeline {
+                    display: none;
+                }
+
+                #mainVideo::-moz-media-controls-timeline {
+                    display: none;
+                }
+            </style>
+
+            
+            <div class="text-center mt-10">
+                <p class="text-brand-brown font-medium tracking-wide">Preparação do Terreno &nbsp;&bull;&nbsp; Lançamento Estratégico &nbsp;&bull;&nbsp; Receita Recorrente</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 4: QUEM SOMOS -->
+    <section id="quem-esta-por-tras" class="bg-white py-24">
+        <div class="container mx-auto px-6 reveal">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- Coluna de Texto (Esquerda) -->
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-8 text-brand-dark">Quem está por trás do <span class="bg-gradient-to-r from-brand-brown via-brand-medium to-brand-gold bg-clip-text text-transparent">Protocolo 24</span></h2>
+
+                    <div class="space-y-6 text-brand-brown leading-relaxed text-lg">
+                        <p>
+                            <strong>Prazer, sou Fernanda Moro.</strong>
+                        </p>
+                        <p>
+                            Criei o Protocolo 24 para transformar a base de pacientes dos profissionais em receita mensal previsível.
+                        </p>
+                        <p>
+                            O foco é simples: não depender de novos pacientes, mas maximizar o faturamento com quem já confia em você.
+                        </p>
+                        <p>
+                            Junto com minha equipe, cuidamos de toda a estratégia: comercial, tráfego, campanhas e execução. Você mantém o foco no que faz melhor: atender com excelência.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Coluna de Imagem (Direita) -->
+                <div class="relative flex justify-center items-center">
+                    <!-- Efeito Glow de Fundo -->
+                    <div class="absolute -inset-4 bg-gradient-to-tr from-brand-gold via-brand-medium to-brand-brown rounded-[3rem] blur-xl opacity-15"></div>
+
+                    <!-- Imagem Fernanda -->
+                    <div class="relative z-10 group cursor-pointer w-full max-w-md">
+                        <div class="w-full bg-brand-light rounded-2xl border border-brand-medium/20 shadow-lg overflow-hidden transition-all duration-500 group-hover:shadow-2xl group-hover:border-brand-gold/50 group-hover:-translate-y-1">
+                            <img src="FERNANDA.PNG" alt="Fernanda Moro" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 5: PASSO A PASSO -->
+    <section id="passo-a-passo" class="bg-white py-24">
+        <div class="container mx-auto px-6 reveal">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-brand-dark">Os <span class="bg-gradient-to-r from-brand-brown via-brand-medium to-brand-gold bg-clip-text text-transparent">4 Passos</span> do Lançamento</h2>
+                <p class="text-lg text-brand-brown max-w-2xl mx-auto">Estrutura completa e pronta para implementar no seu consultório.</p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-6 md:gap-4">
+                <!-- Passo 1 -->
+                <div class="relative">
+                    <div class="bg-brand-light border border-brand-medium/30 rounded-xl p-8 text-center h-full">
+                        <div class="w-14 h-14 bg-brand-gold text-brand-dark font-bold text-xl rounded-full flex items-center justify-center mx-auto mb-4">1</div>
+                        <h3 class="font-bold text-lg mb-3 text-brand-dark">Preparação do Terreno</h3>
+                        <p class="text-brand-brown text-sm leading-relaxed">Comunique o protocolo nas consultas. Crie demanda antes de vender. 2 meses de antecedência.</p>
+                    </div>
+                    <div class="hidden md:block absolute top-1/2 -right-3 w-6 h-1 bg-brand-gold transform -translate-y-1/2"></div>
+                </div>
+
+                <!-- Passo 2 -->
+                <div class="relative">
+                    <div class="bg-brand-light border border-brand-medium/30 rounded-xl p-8 text-center h-full">
+                        <div class="w-14 h-14 bg-brand-gold text-brand-dark font-bold text-xl rounded-full flex items-center justify-center mx-auto mb-4">2</div>
+                        <h3 class="font-bold text-lg mb-3 text-brand-dark">Estrutura do Protocolo</h3>
+                        <p class="text-brand-brown text-sm leading-relaxed">Defina duração, preço, parcelamento e benefícios. Tudo estruturado e pronto para vender.</p>
+                    </div>
+                    <div class="hidden md:block absolute top-1/2 -right-3 w-6 h-1 bg-brand-gold transform -translate-y-1/2"></div>
+                </div>
+
+                <!-- Passo 3 -->
+                <div class="relative">
+                    <div class="bg-brand-light border border-brand-medium/30 rounded-xl p-8 text-center h-full">
+                        <div class="w-14 h-14 bg-brand-gold text-brand-dark font-bold text-xl rounded-full flex items-center justify-center mx-auto mb-4">3</div>
+                        <h3 class="font-bold text-lg mb-3 text-brand-dark">Lançamento com Tráfego</h3>
+                        <p class="text-brand-brown text-sm leading-relaxed">Ative anúncios pagos para sua base. Pacientes já conhecem o protocolo e reconhecem o valor.</p>
+                    </div>
+                    <div class="hidden md:block absolute top-1/2 -right-3 w-6 h-1 bg-brand-gold transform -translate-y-1/2"></div>
+                </div>
+
+                <!-- Passo 4 -->
+                <div class="relative">
+                    <div class="bg-brand-light border border-brand-medium/30 rounded-xl p-8 text-center h-full">
+                        <div class="w-14 h-14 bg-brand-gold text-brand-dark font-bold text-xl rounded-full flex items-center justify-center mx-auto mb-4">4</div>
+                        <h3 class="font-bold text-lg mb-3 text-brand-dark">Execução + Otimização</h3>
+                        <p class="text-brand-brown text-sm leading-relaxed">Execute com excelência, colete dados e otimize para próximos lançamentos.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 text-center">
+                <p class="text-brand-brown font-medium text-lg">Cada etapa tem recursos prontos: templates, scripts e guias de implementação.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 6: O QUE VOCÊ VAI CONSEGUIR -->
+    <section id="resultados" class="bg-gradient-to-b from-white via-brand-light/30 to-white py-24 relative overflow-hidden">
+        <!-- Estrelas decorativas sutis -->
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute top-20 right-10 w-32 h-32 bg-brand-gold/5 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-32 left-5 w-40 h-40 bg-brand-medium/5 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="container mx-auto px-6 reveal relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-brand-dark">Seus <span class="bg-gradient-to-r from-brand-brown via-brand-medium to-brand-gold bg-clip-text text-transparent">Resultados Garantidos</span></h2>
+                <p class="text-lg text-brand-brown max-w-2xl mx-auto">Benefícios diretos que você terá ao estruturar seus protocolos com o Protocolo 24.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="group relative bg-gradient-to-br from-white to-brand-light/40 rounded-2xl p-8 border border-brand-gold/20 shadow-md hover:shadow-2xl hover:border-brand-gold/50 transition-all duration-500 transform hover:-translate-y-2">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-brand-gold/5 rounded-full blur-2xl group-hover:bg-brand-gold/10 transition-all duration-500"></div>
+                    <div class="relative">
+                        <div class="w-16 h-16 bg-gradient-to-br from-brand-gold to-brand-medium rounded-xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-xl mb-3 text-brand-dark">Receita Previsível</h3>
+                        <p class="text-brand-brown leading-relaxed">Saiba exatamente quanto vai faturar. Campanhas estruturadas garantem fluxo de caixa consistente.</p>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="group relative bg-gradient-to-br from-white to-brand-light/40 rounded-2xl p-8 border border-brand-gold/20 shadow-md hover:shadow-2xl hover:border-brand-gold/50 transition-all duration-500 transform hover:-translate-y-2">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-brand-medium/5 rounded-full blur-2xl group-hover:bg-brand-medium/10 transition-all duration-500"></div>
+                    <div class="relative">
+                        <div class="w-16 h-16 bg-gradient-to-br from-brand-medium to-brand-gold rounded-xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-xl mb-3 text-brand-dark">Elimina Sazonalidade</h3>
+                        <p class="text-brand-brown leading-relaxed">Transforme períodos fracos em picos de receita. Fluxo constante durante todo o ano.</p>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="group relative bg-gradient-to-br from-white to-brand-light/40 rounded-2xl p-8 border border-brand-gold/20 shadow-md hover:shadow-2xl hover:border-brand-gold/50 transition-all duration-500 transform hover:-translate-y-2">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-brand-brown/5 rounded-full blur-2xl group-hover:bg-brand-brown/10 transition-all duration-500"></div>
+                    <div class="relative">
+                        <div class="w-16 h-16 bg-gradient-to-br from-brand-brown to-brand-medium rounded-xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 0a3 3 0 11-6 0 3 3 0 016 0zM9 20H4v-2a6 6 0 0112 0v2H9z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-xl mb-3 text-brand-dark">Reativa Pacientes</h3>
+                        <p class="text-brand-brown leading-relaxed">Aqueles pacientes que desapareceram voltam gerando receita contínua e previsível.</p>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="group relative bg-gradient-to-br from-white to-brand-light/40 rounded-2xl p-8 border border-brand-gold/20 shadow-md hover:shadow-2xl hover:border-brand-gold/50 transition-all duration-500 transform hover:-translate-y-2">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-brand-gold/5 rounded-full blur-2xl group-hover:bg-brand-gold/10 transition-all duration-500"></div>
+                    <div class="relative">
+                        <div class="w-16 h-16 bg-gradient-to-br from-brand-gold to-brand-brown rounded-xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-xl mb-3 text-brand-dark">Acessa Pacientes que Adiavam</h3>
+                        <p class="text-brand-brown leading-relaxed">Facilite adesão através de parcelamentos e ofertas estruturadas sem reduzir percepção de valor.</p>
+                    </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="group relative bg-gradient-to-br from-white to-brand-light/40 rounded-2xl p-8 border border-brand-gold/20 shadow-md hover:shadow-2xl hover:border-brand-gold/50 transition-all duration-500 transform hover:-translate-y-2">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-brand-medium/5 rounded-full blur-2xl group-hover:bg-brand-medium/10 transition-all duration-500"></div>
+                    <div class="relative">
+                        <div class="w-16 h-16 bg-gradient-to-br from-brand-medium to-brand-brown rounded-xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-xl mb-3 text-brand-dark">Vínculo Comercial com Pacientes</h3>
+                        <p class="text-brand-brown leading-relaxed">Fortaleça relacionamento e aumente conhecimento dos pacientes sobre outros tratamentos e protocolos.</p>
+                    </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="group relative bg-gradient-to-br from-white to-brand-light/40 rounded-2xl p-8 border border-brand-gold/20 shadow-md hover:shadow-2xl hover:border-brand-gold/50 transition-all duration-500 transform hover:-translate-y-2">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-brand-brown/5 rounded-full blur-2xl group-hover:bg-brand-brown/10 transition-all duration-500"></div>
+                    <div class="relative">
+                        <div class="w-16 h-16 bg-gradient-to-br from-brand-brown to-brand-gold rounded-xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-xl mb-3 text-brand-dark">Múltiplos Protocolos ao Ano</h3>
+                        <p class="text-brand-brown leading-relaxed">Estruture campanhas recorrentes ao longo do ano para gerar novas oportunidades de faturamento.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-10 bg-gradient-to-r from-brand-dark to-brand-brown rounded-2xl p-10 md:p-14 text-white relative overflow-hidden group">
+                <div class="absolute inset-0 bg-gradient-to-br from-brand-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="relative z-10 text-center">
+                    <h3 class="text-2xl md:text-3xl font-bold mb-4">Porque não é apenas sobre captar pacientes novos.</h3>
+                    <p class="text-lg text-brand-light max-w-3xl mx-auto leading-relaxed">O Protocolo 24 foi criado para transformar a própria base da clínica em uma máquina previsível de faturamento recorrente, com estratégia comercial, execução e acompanhamento contínuo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 7: OFERTA -->
+    <section id="oferta" class="bg-brand-dark text-white py-24">
+        <div class="container mx-auto px-6 text-center reveal">
+            <h2 class="text-3xl md:text-4xl font-extrabold mb-6">Próximo Passo: Qualificação Estratégica</h2>
+            <p class="text-lg text-brand-medium mb-12 max-w-2xl mx-auto">Conversa rápida para entender sua situação e estruturar seu primeiro protocolo.</p>
+
+            <div class="bg-brand-brown/20 max-w-2xl mx-auto p-10 md:p-14 rounded-xl border border-brand-medium/30">
+                <p class="text-brand-medium text-lg mb-8 font-medium">Você Recebe:</p>
+                <ul class="text-left space-y-4 mb-12 text-lg">
+                    <li class="flex items-center gap-3"><span class="text-brand-gold">✓</span> Método completo para lançar protocolos</li>
+                    <li class="flex items-center gap-3"><span class="text-brand-gold">✓</span> Estratégia de preparação (2 meses pré-lançamento)</li>
+                    <li class="flex items-center gap-3"><span class="text-brand-gold">✓</span> Templates de anúncios prontos</li>
+                    <li class="flex items-center gap-3"><span class="text-brand-gold">✓</span> Scripts de direcionamento comercial</li>
+                </ul>
+
+                <!-- CTA da Oferta -->
+                <a href="form.html" class="block w-full bg-brand-gold text-brand-dark font-bold py-6 rounded-lg text-xl shadow-lg shadow-brand-gold/20 transition-transform transform hover:scale-105 active:scale-95 text-center">
+                    COMEÇAR AGORA
+                </a>
+
+                <p class="mt-6 text-sm text-brand-medium">2 minutos. Resposta rápida e personalizada.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO 6: FAQ -->
+    <section id="faq" class="bg-brand-light py-20">
+        <div class="container mx-auto px-6 max-w-3xl reveal">
+            <h2 class="text-3xl font-bold text-center mb-12 text-brand-dark">Perguntas Frequentes</h2>
+            <div class="space-y-4">
+                <details class="p-6 border border-brand-medium/30 bg-white rounded-lg" open>
+                    <summary class="font-semibold text-lg cursor-pointer text-brand-dark">Funciona para qualquer especialidade?</summary>
+                    <p class="mt-4 text-brand-brown">Sim. Qualquer protocolo, procedimento ou tratamento. Desde rejuvenescimento até tratamentos recorrentes. O essencial: uma base de pacientes para ativar.</p>
+                </details>
+                <details class="p-6 border border-brand-medium/30 bg-white rounded-lg">
+                    <summary class="font-semibold text-lg cursor-pointer text-brand-dark">Preciso ter muitos pacientes?</summary>
+                    <p class="mt-4 text-brand-brown">Não. O ideal é uma base que confia em você. Com tráfego pago, alcance pessoas que já conhecem sua marca. Foco em público quente, não frio. Mais eficiente e melhor conversão.</p>
+                </details>
+                <details class="p-6 border border-brand-medium/30 bg-white rounded-lg">
+                    <summary class="font-semibold text-lg cursor-pointer text-brand-dark">Quanto tempo para ver resultados?</summary>
+                    <p class="mt-4 text-brand-brown">Com boa preparação (2 meses antecipados), resultados em semanas. O método é um lançamento estratégico, não algo contínuo. Pico de movimento focado, depois otimização.</p>
+                </details>
+                <details class="p-6 border border-brand-medium/30 bg-white rounded-lg">
+                    <summary class="font-semibold text-lg cursor-pointer text-brand-dark">E se não tiver resultados?</summary>
+                    <p class="mt-4 text-brand-brown">Risco zero. Garantia incondicional de 7 dias. Se sentir que não se encaixa, 100% de reembolso. Sem burocracia.</p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODAL FORMULÁRIO DE QUALIFICAÇÃO -->
+    <div id="formModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-brand-brown to-brand-gold p-8 relative">
+                <button onclick="closeModal()" class="absolute top-6 right-6 text-white hover:bg-white/20 w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+                <h2 class="text-3xl font-extrabold text-white mb-2">Protocolo 24</h2>
+                <p class="text-white/90">Vamos entender melhor seu caso em poucos minutos</p>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="bg-brand-light px-8 py-4">
+                <div class="w-full bg-brand-medium/20 rounded-full h-2">
+                    <div id="progressBar" class="bg-brand-gold h-2 rounded-full transition-all duration-500" style="width: 11%;"></div>
+                </div>
+                <p class="text-sm text-brand-brown mt-2"><span id="stepCount">1</span> de 9</p>
+            </div>
+
+            <!-- Form Content -->
+            <div class="p-8">
+                <!-- Step 1: Nome -->
+                <div id="step1" class="step-content">
+                    <h3 class="text-2xl font-bold text-brand-dark mb-2">Identificação Básica</h3>
+                    <p class="text-brand-brown mb-6 text-sm">Nome Completo:</p>
+                    <input type="text" id="nome_completo" placeholder="Seu nome completo" onkeypress="if(event.key==='Enter') nextStep()" class="w-full p-4 border-2 border-brand-medium/30 rounded-xl focus:border-brand-gold focus:outline-none font-semibold text-brand-dark placeholder-brand-brown/40">
+                    <button onclick="nextStep()" class="w-full mt-6 bg-brand-gold hover:bg-brand-medium text-brand-dark font-bold py-4 rounded-xl transition-all transform hover:scale-105">
+                        Próximo
+                    </button>
+                </div>
+
+                <!-- Step 2: Instagram -->
+                <div id="step2" class="step-content hidden">
+                    <h3 class="text-2xl font-bold text-brand-dark mb-2">Instagram (@):</h3>
+                    <p class="text-brand-brown mb-6 text-sm">Opcional - seu perfil do Instagram</p>
+                    <input type="text" id="instagram" placeholder="@seu_perfil" onkeypress="if(event.key==='Enter') nextStep()" class="w-full p-4 border-2 border-brand-medium/30 rounded-xl focus:border-brand-gold focus:outline-none font-semibold text-brand-dark placeholder-brand-brown/40">
+                    <button onclick="nextStep()" class="w-full mt-6 bg-brand-gold hover:bg-brand-medium text-brand-dark font-bold py-4 rounded-xl transition-all transform hover:scale-105">
+                        Próximo
+                    </button>
+                </div>
+
+                <!-- Step 3: WhatsApp -->
+                <div id="step3" class="step-content hidden">
+                    <h3 class="text-2xl font-bold text-brand-dark mb-2">WhatsApp de Contato:</h3>
+                    <p class="text-brand-brown mb-6 text-sm">Com DDD e número</p>
+                    <input type="tel" id="whatsapp" placeholder="(11) 99999-9999" inputmode="numeric" onkeypress="if(event.key==='Enter') nextStep()" oninput="this.value = this.value.replace(/[^0-9()\\s-]/g, '')" class="w-full p-4 border-2 border-brand-medium/30 rounded-xl focus:border-brand-gold focus:outline-none font-semibold text-brand-dark placeholder-brand-brown/40">
+                    <button onclick="nextStep()" class="w-full mt-6 bg-brand-gold hover:bg-brand-medium text-brand-dark font-bold py-4 rounded-xl transition-all transform hover:scale-105">
+                        Próximo
+                    </button>
+                </div>
+
+                <!-- Step 4: Especialidade -->
+                <div id="step4" class="step-content hidden">
+                    <h3 class="text-2xl font-bold text-brand-dark mb-2">Especialidade/Subespecialidade:</h3>
+                    <p class="text-brand-brown mb-6 text-sm">Qual é sua área de atuação?</p>
+                    <input type="text" id="especialidade" placeholder="Ex: Dermatologia, Odontologia..." onkeypress="if(event.key==='Enter') nextStep()" class="w-full p-4 border-2 border-brand-medium/30 rounded-xl focus:border-brand-gold focus:outline-none font-semibold text-brand-dark placeholder-brand-brown/40">
+                    <button onclick="nextStep()" class="w-full mt-6 bg-brand-gold hover:bg-brand-medium text-brand-dark font-bold py-4 rounded-xl transition-all transform hover:scale-105">
+                        Próximo
+                    </button>
+                </div>
+
+                <!-- Step 5: Tempo de Atuação -->
+                <div id="step5" class="step-content hidden">
+                    <h3 class="text-2xl font-bold text-brand-dark mb-2">Maturidade e Estrutura</h3>
+                    <p class="text-brand-brown mb-6 text-sm">Quanto tempo de atuação na área e qual o seu modelo atual?</p>
+                    <div class="space-y-3">
+                        <button onclick="selectOption('tempo_atuacao', 'Recém-formado / Iniciando posicionamento')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark text-sm">
+                            Recém-formado / Iniciando posicionamento
+                        </button>
+                        <button onclick="selectOption('tempo_atuacao', 'Atuo há mais de 2 anos em clínica de terceiros/convênios')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark text-sm">
+                            Atuo há mais de 2 anos em clínica de terceiros/convênios
+                        </button>
+                        <button onclick="selectOption('tempo_atuacao', 'Possuo clínica própria consolidada')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark text-sm">
+                            Possuo clínica própria consolidada
+                        </button>
+                        <button onclick="selectOption('tempo_atuacao', 'Atuo como autoridade e palestrante na área')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark text-sm">
+                            Atuo como autoridade e palestrante na área
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 6: Protocolo Autorais -->
+                <div id="step6" class="step-content hidden">
+                    <h3 class="text-2xl font-bold text-brand-dark mb-2">Protocolo Autorais</h3>
+                    <p class="text-brand-brown mb-6 text-sm">Você já possui algum protocolo autoral ou método de tratamento?</p>
+                    <div class="space-y-3">
+                        <button onclick="selectOption('protocolo_autorais', 'Não, realizo atendimentos gerais conforme a demanda')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark text-sm">
+                            Não, realizo atendimentos gerais conforme a demanda
+                        </button>
+                        <button onclick="selectOption('protocolo_autorais', 'Tenho algo estruturado, mas não tem um nome ou marca forte')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark text-sm">
+                            Tenho algo estruturado, mas não tem um nome ou marca forte
+                        </button>
+                        <button onclick="selectOption('protocolo_autorais', 'Sim, já possuo um protocolo definido e validado')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark text-sm">
+                            Sim, já possuo um protocolo definido e validado
+                        </button>
+                        <button onclick="selectOption('protocolo_autorais', 'Já vendo um método exclusivo, mas quero escalar o ticket médio')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark text-sm">
+                            Já vendo um método exclusivo, mas quero escalar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 7: Pacientes Carreira -->
+                <div id="step7" class="step-content hidden">
+                    <h3 class="text-2xl font-bold text-brand-dark mb-2">Histórico de Volume</h3>
+                    <p class="text-brand-brown mb-6 text-sm">Em média, quantos pacientes você já atendeu?</p>
+                    <div class="space-y-3">
+                        <button onclick="selectOption('pacientes_carreira', 'Até 500 pacientes')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark">
+                            Até 500 pacientes
+                        </button>
+                        <button onclick="selectOption('pacientes_carreira', 'Entre 500 e 2.000 pacientes')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark">
+                            Entre 500 e 2.000 pacientes
+                        </button>
+                        <button onclick="selectOption('pacientes_carreira', 'Mais de 2.000 pacientes')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark">
+                            Mais de 2.000 pacientes
+                        </button>
+                        <button onclick="selectOption('pacientes_carreira', 'Não tenho esse dado exato no momento')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark">
+                            Não tenho esse dado exato
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 8: Faturamento -->
+                <div id="step8" class="step-content hidden">
+                    <h3 class="text-2xl font-bold text-brand-dark mb-2">Faturamento Mensal</h3>
+                    <p class="text-brand-brown mb-6 text-sm">Qual foi o faturamento médio mensal nos últimos 6 meses?</p>
+                    <div class="space-y-3">
+                        <button onclick="selectOption('faturamento_mensal', 'Até R$ 20.000,00')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark">
+                            Até R$ 20.000,00
+                        </button>
+                        <button onclick="selectOption('faturamento_mensal', 'Entre R$ 20.000,00 e R$ 50.000,00')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark">
+                            Entre R$ 20.000,00 e R$ 50.000,00
+                        </button>
+                        <button onclick="selectOption('faturamento_mensal', 'Entre R$ 50.000,00 e R$ 100.000,00')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark">
+                            Entre R$ 50.000,00 e R$ 100.000,00
+                        </button>
+                        <button onclick="selectOption('faturamento_mensal', 'Acima de R$ 100.000,00')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark">
+                            Acima de R$ 100.000,00
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 9: Experiência Tráfego -->
+                <div id="step9" class="step-content hidden">
+                    <h3 class="text-2xl font-bold text-brand-dark mb-2">Presença Digital</h3>
+                    <p class="text-brand-brown mb-6 text-sm">Qual a sua experiência com Tráfego Pago e Gestão de Redes Sociais?</p>
+                    <div class="space-y-3">
+                        <button onclick="selectOption('experiencia_trafego', 'Nunca investi ou apenas uso o botão Impulsionar')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark text-sm">
+                            Nunca investi ou apenas uso o botão Impulsionar
+                        </button>
+                        <button onclick="selectOption('experiencia_trafego', 'Já tive agência ou gestor, mas resultados abaixo do esperado')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark text-sm">
+                            Já tive agência, resultados abaixo do esperado
+                        </button>
+                        <button onclick="selectOption('experiencia_trafego', 'Invisto constantemente com equipe profissional e busco escala')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark text-sm">
+                            Invisto constantemente com equipe profissional
+                        </button>
+                        <button onclick="selectOption('experiencia_trafego', 'Faço por conta própria e quero profissionalizar')" class="option-btn w-full p-4 border-2 border-brand-medium/30 rounded-xl hover:border-brand-gold hover:bg-brand-light transition-all text-left font-semibold text-brand-dark text-sm">
+                            Faço por conta própria, quero profissionalizar
+                        </button>
+                    </div>
+                    <button onclick="submitForm()" class="w-full mt-6 bg-brand-gold hover:bg-brand-medium text-brand-dark font-bold py-4 rounded-xl transition-all transform hover:scale-105">
+                        Enviar Meus Dados
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTÃO FLUTUANTE P24 -->
+    <style>
+        @keyframes float-button {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        @keyframes pulse-strong {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 0.4; }
+        }
+        .float-button {
+            animation: float-button 3s ease-in-out infinite;
+        }
+        .pulse-ring {
+            animation: pulse-strong 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+
+    <a href="form.html" class="fixed bottom-8 right-8 z-40 group float-button block" style="text-decoration: none;">
+        <div class="relative">
+            <!-- Anéis de pulso múltiplos -->
+            <div class="absolute inset-0 bg-brand-gold rounded-full opacity-30 pulse-ring" style="animation-delay: 0s;"></div>
+            <div class="absolute inset-0 bg-brand-gold rounded-full opacity-20 pulse-ring" style="animation-delay: 0.5s;"></div>
+
+            <!-- Efeito de glow forte -->
+            <div class="absolute -inset-1 bg-gradient-to-br from-brand-gold via-brand-medium to-brand-gold rounded-full blur-xl opacity-60 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+            <!-- Botão principal -->
+            <div class="relative w-20 h-20 bg-brand-gold hover:bg-brand-medium rounded-full flex items-center justify-center shadow-2xl hover:shadow-3xl transition-all duration-300 transform group-hover:scale-125 border-4 border-white">
+                <span class="text-brand-dark font-extrabold text-2xl tracking-tight">P24</span>
+            </div>
+
+        </div>
+    </a>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- JavaScript do Formulário -->
+    <script>
+        // Configuração Supabase
+        const SUPABASE_URL = 'https://vdnyaieqcyyzlbbplkps.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbnlhaWVxY3l5emxiYnBsa3BzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODI5MDAsImV4cCI6MjA5NDE1ODkwMH0.7ETofZqiJrCn1T-H4jK3BeRbvohdS8KgJr8l4yMe1Cw';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let currentStep = 1;
+        const formData = {};
+
+        function openModal() {
+            document.getElementById('formModal').classList.remove('hidden');
+            currentStep = 1;
+            showStep(1);
+        }
+
+        function closeModal() {
+            document.getElementById('formModal').classList.add('hidden');
+        }
+
+        function showStep(step) {
+            // Esconde todos os steps
+            document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
+
+            // Mostra o step atual
+            document.getElementById('step' + step).classList.remove('hidden');
+
+            // Atualiza progress bar
+            const progress = (step / 9) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('stepCount').textContent = step;
+
+            // Scroll para o topo do modal
+            document.querySelector('.bg-white.rounded-3xl').scrollTop = 0;
+        }
+
+        function selectOption(field, value) {
+            formData[field] = value;
+
+            // Marca a opção selecionada visualmente
+            event.target.style.borderColor = 'var(--brand-gold, #eba136)';
+            event.target.style.backgroundColor = 'var(--brand-light, #e3e2de)';
+
+            // Aguarda um pouco antes de avançar para não parecer abrupt
+            setTimeout(() => {
+                nextStep();
+            }, 150);
+        }
+
+        function nextStep() {
+            // Validação de campos obrigatórios
+            if (currentStep === 1 && !document.getElementById('nome_completo').value) {
+                alert('Por favor, preencha o nome completo');
+                return;
+            }
+            if (currentStep === 3 && !document.getElementById('whatsapp').value) {
+                alert('Por favor, preencha o WhatsApp');
+                return;
+            }
+            if (currentStep === 4 && !document.getElementById('especialidade').value) {
+                alert('Por favor, preencha a especialidade');
+                return;
+            }
+
+            // Salva dados dos campos de texto
+            if (currentStep === 1) formData.nome_completo = document.getElementById('nome_completo').value;
+            if (currentStep === 2) formData.instagram = document.getElementById('instagram').value;
+            if (currentStep === 3) formData.whatsapp = document.getElementById('whatsapp').value;
+            if (currentStep === 4) formData.especialidade = document.getElementById('especialidade').value;
+
+            if (currentStep < 9) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+
+        async function submitForm() {
+            // Validação final
+            if (!formData.nome_completo || !formData.whatsapp || !formData.especialidade) {
+                alert('Por favor, preencha todos os campos obrigatórios');
+                return;
+            }
+
+            // Desabilita botão enquanto envia
+            const btnSubmit = event.target;
+            btnSubmit.disabled = true;
+            btnSubmit.textContent = 'Enviando...';
+
+            try {
+                // Insere dados no Supabase
+                const { data, error } = await supabase
+                    .from('leads')
+                    .insert([formData]);
+
+                if (error) throw error;
+
+                alert('✅ Dados enviados com sucesso! Em breve entraremos em contato.');
+                closeModal();
+
+                // Reseta formulário
+                document.querySelectorAll('input').forEach(el => el.value = '');
+                Object.keys(formData).forEach(key => delete formData[key]);
+                currentStep = 1;
+
+            } catch (error) {
+                console.error('Erro ao enviar dados:', error);
+                alert('❌ Erro ao enviar dados. Tente novamente.');
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = 'Enviar Meus Dados';
+            }
+        }
+
+        // Fecha modal ao clicar fora
+        document.getElementById('formModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+
+    <!-- FOOTER -->
+    <footer class="bg-brand-dark text-brand-medium border-t border-brand-medium/20">
+        <div class="container mx-auto px-6 py-16">
+            <!-- Seção Principal -->
+            <div class="grid md:grid-cols-3 gap-12 mb-12">
+                <!-- Coluna 1: Marca -->
+                <div>
+                    <div class="text-brand-gold font-extrabold text-2xl mb-2">P24</div>
+                    <p class="text-sm leading-relaxed">Transformando consultórios em máquinas de receita previsível.</p>
+                </div>
+
+                <!-- Coluna 2: Navegação -->
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Navegação</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#hero" class="hover:text-brand-gold transition-colors">Início</a></li>
+                        <li><a href="#como-lotar" class="hover:text-brand-gold transition-colors">Desafios</a></li>
+                        <li><a href="#resultados" class="hover:text-brand-gold transition-colors">Resultados</a></li>
+                        <li><a href="form.html" class="hover:text-brand-gold transition-colors">Formulário</a></li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 3: Legal -->
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Legal</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-brand-gold transition-colors">Termos de Uso</a></li>
+                        <li><a href="#" class="hover:text-brand-gold transition-colors">Política de Privacidade</a></li>
+                        <li class="text-xs opacity-70 pt-2">CNPJ: [seu CNPJ aqui]</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Divisor -->
+            <div class="border-t border-brand-medium/20 pt-8"></div>
+
+            <!-- Rodapé -->
+            <div class="flex flex-col md:flex-row justify-between items-center text-xs text-center md:text-left gap-4">
+                <p>© 2026 Protocolo 24. Todos os direitos reservados.</p>
+                <p class="opacity-70">Site desenvolvido por <a href="https://femo.com.br" target="_blank" rel="noopener noreferrer" class="text-brand-gold hover:text-brand-medium transition-colors font-semibold">//FEMO</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script para animação de fade-in no scroll -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.reveal');
+
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        // Remove a observação para animar apenas na primeira vez que o usuário descer
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                root: null,
+                threshold: 0.15, // Aciona a animação quando 15% do elemento estiver visível
+            });
+
+            reveals.forEach(reveal => {
+                revealObserver.observe(reveal);
+            });
+
+            // Efeito de Scroll na Navbar
+            const navbar = document.getElementById('navbar');
+            const navbarInner = navbar.querySelector('div');
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 20) {
+                    // Navbar fica compacta, aumenta blur e sombra
+                    navbar.classList.remove('bg-brand-light/90', 'backdrop-blur-md', 'shadow-brand-dark/10');
+                    navbar.classList.add('bg-brand-light/75', 'backdrop-blur-xl', 'shadow-brand-dark/20');
+                    navbarInner.classList.remove('py-4');
+                    navbarInner.classList.add('py-2');
+                } else {
+                    // Retorna ao estado original no topo
+                    navbar.classList.add('bg-brand-light/90', 'backdrop-blur-md', 'shadow-brand-dark/10');
+                    navbar.classList.remove('bg-brand-light/75', 'backdrop-blur-xl', 'shadow-brand-dark/20');
+                    navbarInner.classList.add('py-4');
+                    navbarInner.classList.remove('py-2');
+                }
+            });
+
+            // Efeito de Autoplay do Vídeo da Hero com verificação de carregamento
+            const heroVideo = document.getElementById('heroVideo');
+            if (heroVideo) {
+                // Lógica do botão customizado de som
+                const muteToggleBtn = document.getElementById('muteToggleBtn');
+                const iconMuted = document.getElementById('iconMuted');
+                const iconUnmuted = document.getElementById('iconUnmuted');
+
+                if (muteToggleBtn) {
+                    // Altera os ícones de acordo com o som do vídeo
+                    const updateMuteIcon = () => {
+                        if (heroVideo.muted || heroVideo.volume === 0) {
+                            iconMuted.classList.remove('hidden');
+                            iconUnmuted.classList.add('hidden');
+                        } else {
+                            iconMuted.classList.add('hidden');
+                            iconUnmuted.classList.remove('hidden');
+                        }
+                    };
+
+                    heroVideo.addEventListener('volumechange', updateMuteIcon);
+
+                    muteToggleBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation(); // Evita que o clique pause o vídeo acidentalmente
+                        heroVideo.muted = !heroVideo.muted;
+                        if (!heroVideo.muted) heroVideo.volume = 1;
+                    });
+                }
+
+                const attemptPlay = () => {
+                    heroVideo.play().catch(error => {
+                        console.warn("Autoplay bloqueado pelo navegador:", error);
+                    });
+                };
+
+                // Aguarda o vídeo ter os dados mínimos para tocar, evitando falhas de carregamento
+                if (heroVideo.readyState >= 3) {
+                    attemptPlay();
+                } else {
+                    heroVideo.addEventListener('loadeddata', attemptPlay, { once: true });
+                    heroVideo.addEventListener('canplay', attemptPlay, { once: true });
+                }
+            }
+
+            // Lógica do Menu Mobile
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                    mobileMenu.classList.toggle('flex');
+                });
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenu.classList.remove('flex');
+                    });
+                });
+            }
+        });
+    </script>
+
+    <!-- Swiper.js JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <!-- Inicialização do Carrossel de Dores -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const painPoints = [
+                { title: 'Receita Imprevisível', description: 'Meses fortes seguidos de meses fracos. Sem previsibilidade de faturamento e crescimento.' },
+                { title: 'Sazonalidade Brutal', description: 'Períodos fracos reduzem drasticamente a receita da clínica. Falta uma estratégia para ativar pacientes nesses momentos.' },
+                { title: 'Sem Vínculo Comercial', description: 'Muitos pacientes não sabem que você possui outros protocolos, tratamentos ou acompanhamentos disponíveis.' },
+                { title: 'Pacientes Adiando', description: 'Muitos pacientes querem fazer o tratamento, mas adiam por falta de parcelamento estratégico ou condição adequada.' },
+                { title: 'Baixa Adoção de Novos Serviços', description: 'Você investe em novos procedimentos, mas os pacientes não conhecem ou não entendem o valor da oferta.' },
+                { title: 'Base Existente Ociosa', description: 'Você já tem pacientes que confiam em você, mas não há estratégia para ativá-los com novos serviços.' },
+                { title: 'Sem Direcionamento Estratégico', description: 'Cada paciente é uma oportunidade, mas falta trabalho comercial para direcionar ao protocolo certo.' },
+                { title: 'Terreno Não Preparado', description: 'Lançar um novo protocolo do nada não funciona. Falta comunicação prévia para criar demanda.' },
+                { title: 'Receita Ineficiente', description: 'Trabalha muito, mas a maioria da receita vem de convênios com margem baixa. Falta receita previsível e recorrente.' },
+                { title: 'Pacientes Desaparecem', description: 'Aquele paciente que veio uma vez, fez o procedimento e nunca mais apareceu. Sua base não gera receita recorrente.' },
+            ];
+
+            const swiperWrapper = document.querySelector('.pain-carousel .swiper-wrapper');
+            painPoints.forEach(point => {
+                swiperWrapper.innerHTML += `
+                    <div class="swiper-slide bg-brand-light p-8 rounded-xl border border-brand-medium/20 shadow-xl text-left flex flex-col justify-center h-auto">
+                        <h3 class="font-bold text-xl mb-2 text-brand-dark">${point.title}</h3>
+                        <p class="text-brand-brown">${point.description}</p>
+                    </div>
+                `;
+            });
+
+            const painSwiper = new Swiper('.pain-carousel', {
+                slidesPerView: 'auto',
+                centeredSlides: true,
+                spaceBetween: 20,
+                loop: true,
+                loopedSlides: 4, /* Garante clones suficientes para o loop não pular */
+                speed: 6000, /* Velocidade um pouco mais suave e relaxada */
+                autoplay: {
+                    delay: 0, /* Sem pausas entre os slides */
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true, // Pausa o carrossel ao passar o mouse sobre ele
+                },
+                grabCursor: true,
+                watchSlidesProgress: true, /* Necessário para calcular a distância do centro */
+                on: {
+                    /* Sincroniza perfeitamente a escala e opacidade com a posição física do card na tela */
+                    progress: function(swiper) {
+                        for (let i = 0; i < swiper.slides.length; i++) {
+                            const slide = swiper.slides[i];
+                            const progress = slide.progress;
+                            const absProgress = Math.abs(progress);
+                            
+                            const scale = 1 - Math.min(absProgress * 0.15, 0.15); // Escala de 1 até 0.85
+                            const opacity = 1 - Math.min(absProgress * 0.6, 0.6); // Opacidade de 1 até 0.4
+                            
+                            slide.style.opacity = opacity;
+                            slide.style.transform = `scale(${scale})`;
+                        }
+                    },
+                    setTransition: function(swiper, transition) {
+                        for (let i = 0; i < swiper.slides.length; i++) {
+                            swiper.slides[i].style.transition = `opacity ${transition}ms linear, transform ${transition}ms linear`;
+                        }
+                    }
+                },
+                breakpoints: {
+                    768: {
+                        spaceBetween: 30 /* Espaçamento ajustado para o efeito de profundidade */
+                    }
+                }
+            });
+        });
+    </script>
+
+    <!-- Script para controlar timeline do vídeo -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('mainVideo');
+            const timeline = document.getElementById('videoTimeline');
+            const progressBar = document.getElementById('videoProgressBar');
+            let slowAnimationTimeout;
+
+            if (video && timeline && progressBar) {
+                video.addEventListener('play', function() {
+                    timeline.style.display = 'block';
+
+                    // Remover classes antigas
+                    progressBar.classList.remove('playing-fast', 'playing-slow');
+                    progressBar.style.animation = '';
+
+                    // Adicionar animação rápida (0 a 90% em 2s)
+                    progressBar.classList.add('playing-fast');
+
+                    // Após 2s, adicionar animação lenta (90% a 100%)
+                    clearTimeout(slowAnimationTimeout);
+                    slowAnimationTimeout = setTimeout(function() {
+                        if (!video.paused) {
+                            progressBar.classList.remove('playing-fast');
+                            const remainingTime = video.duration - 2;
+                            progressBar.style.animationDuration = Math.max(remainingTime, 1) + 's';
+                            progressBar.classList.add('playing-slow');
+                        }
+                    }, 2000);
+                });
+
+                video.addEventListener('pause', function() {
+                    clearTimeout(slowAnimationTimeout);
+                    progressBar.classList.remove('playing-fast', 'playing-slow');
+                    progressBar.style.animation = 'none';
+                    progressBar.style.width = '100%';
+                });
+
+                video.addEventListener('ended', function() {
+                    clearTimeout(slowAnimationTimeout);
+                    timeline.style.display = 'none';
+                    progressBar.classList.remove('playing-fast', 'playing-slow');
+                    progressBar.style.width = '0%';
+                });
+            }
+        });
+    </script>
+</body>
+
+</a>
+</a>

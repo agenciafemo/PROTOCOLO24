@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolo 24 | Formulário</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .brand-gold { background-color: #eba136; }
+        .brand-brown { background-color: #684a29; }
+        .brand-medium { background-color: #a98360; }
+        .brand-dark { background-color: #2e200c; }
+        .brand-light { background-color: #e3e2de; }
+        .text-brand-dark { color: #2e200c; }
+        .text-brand-brown { color: #684a29; }
+        .border-brand { border-color: #a98360; }
+        .hover\:scale-102:hover { transform: scale(1.02); }
+        .focus\:ring-4:focus { box-shadow: 0 0 0 4px rgba(235, 161, 54, 0.1); }
+
+        /* Estilos para as estrelas decorativas */
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); opacity: 0.15; }
+            25% { transform: translate(20px, 40px); opacity: 0.65; }
+            50% { transform: translate(-30px, 10px); opacity: 0.3; }
+            75% { transform: translate(10px, -30px); opacity: 0.75; }
+            100% { transform: translate(0, 0); opacity: 0.15; }
+        }
+
+        .star1 { top: 10%; left: 15%; width: 8px; height: 8px; background-color: #eba136; animation-delay: -2s; animation-duration: 25s; }
+        .star2 { top: 20%; right: 10%; width: 5px; height: 5px; background-color: #a98360; animation-delay: -8s; animation-duration: 22s; }
+        .star3 { bottom: 40%; left: 25%; width: 6px; height: 6px; background-color: #a98360; animation-delay: -5s; animation-duration: 18s; }
+        .star4 { bottom: 25%; right: 20%; width: 7px; height: 7px; background-color: #eba136; animation-delay: -12s; animation-duration: 28s; }
+        .star5 { top: 50%; left: 5%; width: 4px; height: 4px; background-color: #eba136; animation-delay: -1s; animation-duration: 15s; }
+        .star6 { top: 70%; right: 30%; width: 5px; height: 5px; background-color: #a98360; animation-delay: -15s; animation-duration: 20s; }
+        .star7 { top: 15%; left: 80%; width: 6px; height: 6px; background-color: #eba136; animation-delay: -7s; animation-duration: 24s; }
+        .star8 { bottom: 15%; left: 10%; width: 4px; height: 4px; background-color: #a98360; animation-delay: -3s; animation-duration: 19s; }
+        .star9 { top: 40%; right: 15%; width: 7px; height: 7px; background-color: #eba136; animation-delay: -10s; animation-duration: 27s; }
+        .star10 { bottom: 30%; right: 5%; width: 5px; height: 5px; background-color: #a98360; animation-delay: -14s; animation-duration: 21s; }
+        .star11 { top: 60%; left: 20%; width: 8px; height: 8px; background-color: #a98360; animation-delay: -6s; animation-duration: 26s; }
+        .star12 { top: 80%; right: 40%; width: 6px; height: 6px; background-color: #eba136; animation-delay: -11s; animation-duration: 23s; }
+
+        /* Animações dos elementos do formulário */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .optionBtn {
+            animation: slideUp 0.4s ease-out forwards;
+        }
+
+        .optionBtn:nth-child(1) { animation-delay: 0ms; }
+        .optionBtn:nth-child(2) { animation-delay: 80ms; }
+        .optionBtn:nth-child(3) { animation-delay: 160ms; }
+        .optionBtn:nth-child(4) { animation-delay: 240ms; }
+
+        input[type="text"],
+        input[type="tel"] {
+            animation: slideUp 0.4s ease-out;
+        }
+    </style>
+</head>
+<body class="brand-light">
+
+<div class="min-h-screen flex flex-col bg-gradient-to-b from-brand-light to-white relative overflow-hidden">
+    <!-- Container das Estrelas Decorativas -->
+    <div class="absolute inset-0 z-0 pointer-events-none">
+        <span class="star star1"></span>
+        <span class="star star2"></span>
+        <span class="star star3"></span>
+        <span class="star star4"></span>
+        <span class="star star5"></span>
+        <span class="star star6"></span>
+        <span class="star star7"></span>
+        <span class="star star8"></span>
+        <span class="star star9"></span>
+        <span class="star star10"></span>
+        <span class="star star11"></span>
+        <span class="star star12"></span>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="relative z-10 w-full h-1 bg-gray-200">
+        <div id="progress" class="h-1 bg-brand-gold transition-all duration-500" style="width: 11%"></div>
+    </div>
+
+    <!-- Step Counter -->
+    <div class="relative z-10 px-6 py-4 flex flex-col gap-2 bg-white border-b border-gray-100">
+        <div class="flex justify-between items-center">
+            <p class="text-sm font-bold text-brand-gold">Passo <span id="stepNum">1</span> de 9</p>
+            <p class="text-xs text-gray-500" id="stepPercent">11%</p>
+        </div>
+        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div id="stepBar" class="h-full bg-brand-gold transition-all duration-500" style="width: 11%"></div>
+        </div>
+    </div>
+
+    <!-- Form Container (Story-like) -->
+    <div class="relative z-10 flex-1 flex items-center justify-center px-6 py-8" id="formWrapper">
+        <div class="w-full max-w-2xl" id="formContainer">
+            <!-- Preenchido por JavaScript -->
+        </div>
+    </div>
+
+    <!-- Success Screen -->
+    <div id="successScreen" class="hidden fixed inset-0 bg-white flex flex-col items-center justify-center p-6 z-50">
+        <div class="absolute inset-0 z-0 pointer-events-none">
+            <span class="star star1"></span>
+            <span class="star star2"></span>
+            <span class="star star3"></span>
+            <span class="star star4"></span>
+        </div>
+
+        <div class="text-center max-w-md relative z-10">
+            <!-- Checkmark -->
+            <div class="mb-8">
+                <div class="w-24 h-24 mx-auto bg-brand-gold rounded-full flex items-center justify-center">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <h2 class="text-4xl font-bold text-brand-dark mb-3">Perfeito!</h2>
+            <p class="text-lg text-brand-brown mb-2">Seu formulário foi enviado com sucesso</p>
+            <p class="text-base text-gray-600 mb-10">Em breve entraremos em contato para discutir as melhores estratégias para sua clínica.</p>
+
+            <!-- Buttons -->
+            <div class="space-y-3">
+                <button onclick="location.href='index.html'" class="w-full text-white font-bold py-4 rounded-xl text-lg" style="background-color: #eba136;">
+                    ← Voltar ao Site
+                </button>
+                <button onclick="resetForm()" class="w-full text-white font-bold py-4 rounded-xl text-lg" style="background-color: #a98360;">
+                    + Enviar Outro
+                </button>
+            </div>
+
+            <p class="text-xs text-gray-500 mt-8">Protocolo 24</p>
+        </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="w-full bg-white border-t border-gray-200 px-6 py-6">
+        <div class="flex gap-3 max-w-2xl mx-auto">
+            <button id="btnPrev" class="hidden flex-1 py-3 px-4 rounded-lg font-bold text-white transition-all duration-200" style="background-color: #a98360;">← Voltar</button>
+            <button id="btnNext" class="flex-1 py-3 px-4 rounded-lg font-bold text-white transition-all duration-200 hover:shadow-lg hover:scale-105" style="background-color: #eba136;">Próximo →</button>
+            <button id="btnSubmit" class="hidden flex-1 py-3 px-4 rounded-lg font-bold text-white transition-all duration-200 hover:shadow-lg hover:scale-105" style="background-color: #eba136;">Finalizar ✓</button>
+        </div>
+        <p id="errorMsg" class="text-center text-red-500 text-sm font-semibold mt-3 hidden opacity-0 transition-opacity duration-300"></p>
+    </div>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://vdnyaieqcyyzlbbplkps.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbnlhaWVxY3l5emxiYnBsa3BzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODI5MDAsImV4cCI6MjA5NDE1ODkwMH0.7ETofZqiJrCn1T-H4jK3BeRbvohdS8KgJr8l4yMe1Cw';
+
+    let currentStep = 1;
+    const totalSteps = 9;
+    const formData = {};
+
+    const steps = [
+        {
+            title: 'Identificação Básica',
+            type: 'text',
+            field: 'nome_completo',
+            label: 'Nome Completo:',
+            placeholder: 'Seu nome completo',
+            required: true
+        },
+        {
+            title: 'Instagram',
+            type: 'text',
+            field: 'instagram',
+            label: 'Instagram (@):',
+            placeholder: '@seu_perfil',
+            required: false
+        },
+        {
+            title: 'Contato',
+            type: 'tel',
+            field: 'whatsapp',
+            label: 'WhatsApp:',
+            placeholder: '(11) 99999-9999',
+            required: true
+        },
+        {
+            title: 'Especialidade',
+            type: 'text',
+            field: 'especialidade',
+            label: 'Especialidade/Subespecialidade:',
+            placeholder: 'Ex: Dermatologia...',
+            required: true
+        },
+        {
+            title: 'Tempo de Atuação',
+            type: 'options',
+            field: 'tempo_atuacao',
+            label: 'Quanto tempo de atuação na área?',
+            options: [
+                'Recém-formado / Iniciando posicionamento',
+                'Atuo há mais de 2 anos em clínica de terceiros/convênios',
+                'Possuo clínica própria consolidada',
+                'Atuo como autoridade e palestrante na área'
+            ]
+        },
+        {
+            title: 'Protocolos Autorais',
+            type: 'options',
+            field: 'protocolo_autorais',
+            label: 'Você já possui protocolo autoral?',
+            options: [
+                'Não, realizo atendimentos gerais conforme a demanda',
+                'Tenho algo estruturado, mas não tem um nome ou marca forte',
+                'Sim, já possuo um protocolo definido e validado',
+                'Já vendo um método exclusivo, mas quero escalar o ticket médio'
+            ]
+        },
+        {
+            title: 'Histórico de Pacientes',
+            type: 'options',
+            field: 'pacientes_carreira',
+            label: 'Quantos pacientes você já atendeu?',
+            options: [
+                'Até 500 pacientes',
+                'Entre 500 e 2.000 pacientes',
+                'Mais de 2.000 pacientes',
+                'Não tenho esse dado exato no momento'
+            ]
+        },
+        {
+            title: 'Faturamento Mensal',
+            type: 'options',
+            field: 'faturamento_mensal',
+            label: 'Faturamento médio dos últimos 6 meses?',
+            options: [
+                'Até R$ 20.000,00',
+                'Entre R$ 20.000,00 e R$ 50.000,00',
+                'Entre R$ 50.000,00 e R$ 100.000,00',
+                'Acima de R$ 100.000,00'
+            ]
+        },
+        {
+            title: 'Experiência Digital',
+            type: 'options',
+            field: 'experiencia_trafego',
+            label: 'Experiência com Tráfego Pago?',
+            options: [
+                'Nunca investi ou apenas uso o botão Impulsionar',
+                'Já tive agência ou gestor, mas os resultados foram abaixo do esperado',
+                'Invisto constantemente com equipe profissional e busco escala',
+                'Faço por conta própria e quero profissionalizar o processo'
+            ]
+        }
+    ];
+
+    function renderStep() {
+        const step = steps[currentStep - 1];
+        const container = document.getElementById('formContainer');
+
+        let html = `<div class="mb-8">
+            <p class="text-sm font-bold text-brand-gold uppercase tracking-wide mb-3">${step.title}</p>
+            <h3 class="text-4xl font-bold text-brand-dark leading-snug">${step.label}</h3>
+        </div>`;
+
+        if (step.type === 'text' || step.type === 'tel') {
+            html += `
+                <input type="${step.type}" id="inputField" placeholder="${step.placeholder}"
+                    value="${formData[step.field] || ''}"
+                    class="w-full px-6 py-4 border-b-2 border-gray-300 focus:border-brand-gold focus:outline-none text-brand-dark text-lg transition-colors duration-200 bg-transparent"
+                    ${step.required ? 'required' : ''}>
+            `;
+        } else if (step.type === 'options') {
+            html += '<div class="space-y-3">';
+            step.options.forEach(opt => {
+                const selected = formData[step.field] === opt;
+                const borderClass = selected ? 'border-b-4 border-brand-gold' : 'border-b-2 border-gray-300';
+                const bgClass = selected ? 'bg-yellow-50' : 'hover:bg-gray-50';
+                const textClass = selected ? 'text-brand-gold font-bold' : 'text-brand-dark';
+                html += `<button type="button" class="optionBtn w-full text-left px-4 py-4 rounded-lg ${bgClass} ${borderClass} ${textClass} transition-all duration-300"
+                    data-value="${opt}">${opt}</button>`;
+            });
+            html += '</div>';
+        }
+
+        container.innerHTML = html;
+        updateUI();
+    }
+
+    function updateUI() {
+        const percentage = (currentStep / totalSteps * 100);
+        document.getElementById('stepNum').textContent = currentStep;
+        document.getElementById('stepPercent').textContent = Math.round(percentage) + '%';
+        document.getElementById('progress').style.width = percentage + '%';
+        document.getElementById('stepBar').style.width = percentage + '%';
+
+        document.getElementById('btnPrev').classList.toggle('hidden', currentStep === 1);
+        document.getElementById('btnNext').classList.toggle('hidden', currentStep === totalSteps);
+        document.getElementById('btnSubmit').classList.toggle('hidden', currentStep !== totalSteps);
+        document.getElementById('errorMsg').classList.add('hidden');
+    }
+
+    function showError(message) {
+        const errorEl = document.getElementById('errorMsg');
+        errorEl.textContent = '⚠ ' + message;
+        errorEl.classList.remove('hidden');
+        errorEl.style.opacity = '1';
+        setTimeout(() => {
+            errorEl.style.opacity = '0';
+            setTimeout(() => errorEl.classList.add('hidden'), 300);
+        }, 4000);
+    }
+
+    // Event delegation para botões de opção
+    document.getElementById('formContainer').addEventListener('click', (e) => {
+        if (e.target.classList.contains('optionBtn')) {
+            const step = steps[currentStep - 1];
+            const selectedValue = e.target.dataset.value;
+
+            // Toggle: se já foi selecionado, desselecionar; senão, selecionar
+            if (formData[step.field] === selectedValue) {
+                delete formData[step.field];
+            } else {
+                formData[step.field] = selectedValue;
+            }
+
+            renderStep();
+        }
+    });
+
+    document.getElementById('btnNext').addEventListener('click', () => {
+        const step = steps[currentStep - 1];
+        const input = document.getElementById('inputField');
+
+        if (input && step.required && !input.value.trim()) {
+            showError(`Preencha ${step.label}`);
+            input.focus();
+            return;
+        }
+
+        if (input) {
+            formData[step.field] = input.value.trim();
+        }
+
+        if (currentStep < totalSteps) {
+            currentStep++;
+            renderStep();
+        }
+    });
+
+    document.getElementById('btnPrev').addEventListener('click', () => {
+        if (currentStep > 1) {
+            currentStep--;
+            renderStep();
+        }
+    });
+
+    function resetForm() {
+        formData = {};
+        currentStep = 1;
+        document.getElementById('successScreen').classList.add('hidden');
+        document.getElementById('formWrapper').classList.remove('hidden');
+        updateUI();
+    }
+
+    document.getElementById('btnSubmit').addEventListener('click', async () => {
+        const step = steps[currentStep - 1];
+        const input = document.getElementById('inputField');
+        if (input) formData[step.field] = input.value.trim();
+
+        if (!formData.nome_completo || !formData.whatsapp || !formData.especialidade) {
+            showError('Preencha nome, WhatsApp e especialidade');
+            return;
+        }
+
+        const btn = document.getElementById('btnSubmit');
+        btn.disabled = true;
+        btn.textContent = '⏳ Enviando...';
+
+        try {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/leads`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) throw new Error('Erro ao enviar');
+
+            // Mostrar tela de sucesso
+            document.getElementById('formWrapper').classList.add('hidden');
+            document.getElementById('successScreen').classList.remove('hidden');
+        } catch (error) {
+            console.error(error);
+            showError('Erro ao enviar. Tente novamente.');
+            btn.disabled = false;
+            btn.textContent = 'Finalizar ✓';
+        }
+    });
+
+    // Iniciar
+    renderStep();
+</script>
+
+</body>
+</html>
