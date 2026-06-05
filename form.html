@@ -549,9 +549,19 @@
         }
 
         async function submitForm() {
+            // Tentar inicializar Supabase se ainda não foi feito
             if (!supabase) {
-                alert('Erro: Supabase não inicializado. Tente novamente em alguns segundos.');
-                return;
+                console.warn('Supabase não inicializado, tentando agora...');
+                await new Promise(r => setTimeout(r, 500));
+                if (!supabase && supabaseAttempts < maxAttempts) {
+                    tryInitSupabase();
+                    await new Promise(r => setTimeout(r, 1000));
+                }
+
+                if (!supabase) {
+                    alert('⚠️ Conexão indisponível.\n\nVerifique sua internet e tente novamente em alguns segundos.');
+                    return;
+                }
             }
 
             document.getElementById('resumoNome').textContent = formData.nome_completo;
@@ -769,42 +779,55 @@
         </div>
     </div>
 
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.4"></script>
     <script>
         const SUPABASE_URL = 'https://vdnyaieqcyyzlbbplkps.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbnlhaWVxY3l5emxiYnBsa3BzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODI5MDAsImV4cCI6MjA5NDE1ODkwMH0.7ETofZqiJrCn1T-H4jK3BeRbvohdS8KgJr8l4yMe1Cw';
 
-        // Inicializar Supabase imediatamente
-        function initSupabase() {
-            if (window.supabase && window.supabase.createClient) {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                console.log('✓ Supabase inicializado');
-                return true;
+        // Inicializar Supabase
+        let supabaseAttempts = 0;
+        const maxAttempts = 100;
+
+        function tryInitSupabase() {
+            try {
+                if (window.supabase && typeof window.supabase.createClient === 'function') {
+                    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                    console.log('✓ Supabase inicializado com sucesso');
+                    return true;
+                } else {
+                    supabaseAttempts++;
+                    if (supabaseAttempts < maxAttempts) {
+                        setTimeout(tryInitSupabase, 50);
+                    } else {
+                        console.error('✗ Falha ao carregar Supabase após', maxAttempts, 'tentativas');
+                        console.warn('window.supabase:', window.supabase);
+                    }
+                    return false;
+                }
+            } catch (e) {
+                console.error('Erro ao inicializar Supabase:', e);
+                return false;
             }
-            return false;
         }
 
-        // Tentar inicializar quando o script carregar
-        let attempts = 0;
-        const checkInterval = setInterval(function() {
-            if (initSupabase()) {
-                clearInterval(checkInterval);
-            } else if (attempts++ > 50) {
-                clearInterval(checkInterval);
-                console.error('✗ Falha ao carregar Supabase');
-            }
-        }, 100);
+        // Iniciar tentativas imediatamente
+        tryInitSupabase();
 
         // Inicializar quando o documento estiver pronto
         document.addEventListener('DOMContentLoaded', function() {
-            initSupabase();
+            // Tentar inicializar novamente se ainda não foi feito
+            if (!supabase) {
+                tryInitSupabase();
+            }
 
             const dotsContainer = document.getElementById('progressDots');
-            for (let i = 1; i <= 9; i++) {
-                const dot = document.createElement('div');
-                dot.className = 'progress-dot' + (i === 1 ? ' active' : '');
-                dot.id = 'dot-' + i;
-                dotsContainer.appendChild(dot);
+            if (dotsContainer) {
+                for (let i = 1; i <= 9; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'progress-dot' + (i === 1 ? ' active' : '');
+                    dot.id = 'dot-' + i;
+                    dotsContainer.appendChild(dot);
+                }
             }
         });
     </script>
