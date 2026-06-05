@@ -19,8 +19,8 @@ module.exports = async function handler(req, res) {
     console.log('🔍 Tentando conectar ao Supabase...');
     console.log('URL:', SUPABASE_URL);
 
-    // Tentar buscar da tabela 'leads'
-    const response = await fetch(`${SUPABASE_URL}/rest/v1/leads`, {
+    // Tentar buscar da tabela 'leads' ordenado por data_criacao
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/leads?order=data_criacao.desc`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
