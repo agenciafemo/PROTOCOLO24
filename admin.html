@@ -812,22 +812,22 @@
             emptyState.style.display = 'block';
 
             try {
-                // Buscar dados da API serverless
-                const response = await fetch('/api/get-leads');
-                const result = await response.json();
+                // Buscar dados direto do Supabase
+                const { data, error } = await client.from('leads').select('*').order('data_criacao', { ascending: false });
 
-                if (!response.ok) {
-                    throw new Error(result.error || 'Erro ao buscar dados');
+                if (error) {
+                    console.error('❌ Erro Supabase:', error);
+                    throw new Error(error.message || 'Erro ao buscar dados');
                 }
 
-                allLeads = result.data || [];
+                allLeads = data || [];
                 renderTable(allLeads);
                 updateStats();
                 console.log('✓ Leads carregados:', allLeads.length);
             } catch (error) {
-                console.error('Erro:', error);
-                emptyState.innerHTML = '<div style="text-align: center;"><p style="color: #b54848; margin-bottom: 1rem;">Erro ao conectar com o banco de dados. Verifique sua conexão.</p><button onclick="loadLeads()" class="btn-primary">Tentar novamente</button></div>';
-                showToast('✗ Erro ao carregar dados', 'error');
+                console.error('❌ Erro ao carregar leads:', error.message || error);
+                emptyState.innerHTML = '<div style="text-align: center;"><p style="color: #b54848; margin-bottom: 1rem;">Erro ao conectar com o banco de dados.<br/>Detalhes: ' + (error.message || 'Erro desconhecido') + '</p><button onclick="loadLeads()" class="btn-primary">Tentar novamente</button></div>';
+                showToast('✗ Erro ao carregar dados: ' + (error.message || 'Erro desconhecido'), 'error');
             }
         }
 
