@@ -812,11 +812,18 @@
             emptyState.style.display = 'block';
 
             try {
-                const { data, error } = await client.from('leads').select('*').order('data_criacao', { ascending: false });
-                if (error) throw error;
-                allLeads = data || [];
+                // Buscar dados da API serverless
+                const response = await fetch('/api/get-leads');
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Erro ao buscar dados');
+                }
+
+                allLeads = result.data || [];
                 renderTable(allLeads);
                 updateStats();
+                console.log('✓ Leads carregados:', allLeads.length);
             } catch (error) {
                 console.error('Erro:', error);
                 emptyState.innerHTML = '<div style="text-align: center;"><p style="color: #b54848; margin-bottom: 1rem;">Erro ao conectar com o banco de dados. Verifique sua conexão.</p><button onclick="loadLeads()" class="btn-primary">Tentar novamente</button></div>';
