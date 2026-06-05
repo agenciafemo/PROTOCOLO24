@@ -20,8 +20,11 @@
             --status-descartado: #b54848;
             --shadow-sm: 0 2px 8px rgba(46, 32, 12, 0.08);
             --shadow-md: 0 8px 24px rgba(46, 32, 12, 0.12);
+            --shadow-gold: 0 4px 20px rgba(235, 161, 54, 0.2);
             --transition: 220ms cubic-bezier(0.4, 0, 0.2, 1);
             --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
         }
 
         * { font-family: 'Inter', -apple-system, sans-serif; }
@@ -34,13 +37,82 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        #loginModal {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--femo-light);
+            z-index: 100;
+        }
+
+        #loginModal.hidden {
+            display: none;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 200;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            box-shadow: var(--shadow-md);
+            animation: slideUp 300ms ease-out;
+        }
+
+        .toast.success {
+            background: #f0faf0;
+            border-left: 4px solid #5a8a4a;
+            color: #2d4a22;
+        }
+
+        .toast.error {
+            background: #fdf0f0;
+            border-left: 4px solid #b54848;
+            color: #5a1a1a;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         .admin-header {
             background: linear-gradient(135deg, var(--femo-dark) 0%, var(--femo-brown) 100%);
             padding: 2rem;
-            border-bottom: 3px solid var(--femo-gold);
+            border-bottom: 4px solid var(--femo-gold);
             position: sticky;
             top: 0;
             z-index: 40;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-header::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 200px;
+            height: 200px;
+            background: rgba(235, 161, 54, 0.08);
+            border-radius: 50%;
+            filter: blur(40px);
+            pointer-events: none;
         }
 
         .admin-header h1 {
@@ -68,10 +140,10 @@
         }
 
         .btn-logout {
-            background: #b54848;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
             padding: 0.625rem 1.25rem;
-            border: none;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
@@ -80,7 +152,7 @@
         }
 
         .btn-logout:hover {
-            background: #8a3636;
+            background: rgba(255, 255, 255, 0.2);
             transform: translateY(-1px);
         }
 
@@ -98,13 +170,22 @@
         }
 
         .stat-card {
-            background: var(--femo-light);
-            border: 1px solid rgba(104, 74, 41, 0.1);
+            background: white;
+            border: 1px solid rgba(235, 161, 54, 0.12);
             border-radius: var(--radius);
             padding: 1.5rem;
             transition: transform var(--transition), box-shadow var(--transition);
             position: relative;
             overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-card .icon {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            opacity: 0.2;
         }
 
         .stat-card::before {
@@ -138,7 +219,10 @@
         }
 
         .stat-card .value {
-            color: var(--femo-dark);
+            background: linear-gradient(135deg, var(--femo-dark), var(--femo-brown));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             font-size: 2.25rem;
             font-weight: 800;
             margin-top: 0.5rem;
@@ -147,11 +231,20 @@
 
         .filters {
             background: white;
-            border-radius: var(--radius);
+            border-radius: var(--radius-lg);
             padding: 1.5rem;
             margin-bottom: 2rem;
             box-shadow: var(--shadow-sm);
-            border: 1px solid rgba(104, 74, 41, 0.08);
+            border: 1px solid rgba(235, 161, 54, 0.1);
+        }
+
+        .filters-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--femo-tan);
+            margin-bottom: 1rem;
         }
 
         .filters-grid {
@@ -230,7 +323,11 @@
         }
 
         thead {
-            background: var(--femo-dark);
+            background: linear-gradient(135deg, var(--femo-dark) 0%, var(--femo-brown) 100%);
+        }
+
+        tbody tr:nth-child(even) {
+            background: rgba(227, 226, 222, 0.3);
         }
 
         th {
@@ -304,11 +401,12 @@
         .btn-view {
             background: var(--femo-gold);
             color: var(--femo-dark);
-            padding: 0.375rem 0.75rem;
+            padding: 0.35rem 0.875rem;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
+            letter-spacing: 0.02em;
             cursor: pointer;
             transition: all var(--transition);
         }
@@ -389,6 +487,8 @@
             letter-spacing: 0.08em;
             margin-bottom: 1rem;
             color: var(--femo-brown);
+            border-left: 3px solid var(--femo-gold);
+            padding-left: 1rem;
         }
 
         .modal-field {
@@ -412,9 +512,12 @@
         }
 
         .field-value {
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             color: var(--femo-dark);
             font-weight: 500;
+            background: var(--femo-light);
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
         }
 
         .field-value a {
@@ -513,24 +616,29 @@
         <div class="container">
             <div class="stats-grid">
                 <div class="stat-card">
+                    <div class="icon">👥</div>
                     <p class="label">Total de Leads</p>
                     <p class="value" id="totalLeads">0</p>
                 </div>
                 <div class="stat-card">
+                    <div class="icon">⏰</div>
                     <p class="label">Últimas 24h</p>
                     <p class="value" id="todayLeads">0</p>
                 </div>
                 <div class="stat-card">
+                    <div class="icon">📞</div>
                     <p class="label">Contatados</p>
                     <p class="value" id="contatados">0</p>
                 </div>
                 <div class="stat-card">
+                    <div class="icon">⭐</div>
                     <p class="label">Qualificados</p>
                     <p class="value" id="qualificados">0</p>
                 </div>
             </div>
 
             <div class="filters">
+                <p class="filters-title">Filtros & Ações</p>
                 <div class="filters-grid">
                     <input type="text" id="searchInput" placeholder="Buscar nome...">
                     <select id="statusFilter">
@@ -619,6 +727,10 @@
                         <p class="field-label">Faturamento</p>
                         <p class="field-value" id="modal_faturamento">-</p>
                     </div>
+                    <div>
+                        <p class="field-label">Experiência em Tráfego</p>
+                        <p class="field-value" id="modal_experiencia">-</p>
+                    </div>
                 </div>
             </div>
 
@@ -663,15 +775,29 @@
         let allLeads = [];
         let currentLead = null;
 
+        function showToast(msg, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(8px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
         function login() {
             const pwd = document.getElementById('passwordInput').value;
             if (pwd === ADMIN_PASSWORD) {
                 localStorage.setItem('admin_auth', 'true');
-                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('loginModal').classList.add('hidden');
                 document.getElementById('mainContent').style.display = 'block';
+                showToast('✓ Bem-vindo ao painel!', 'success');
                 loadLeads();
             } else {
-                alert('Senha incorreta!');
+                showToast('✗ Senha incorreta!', 'error');
             }
         }
 
@@ -681,6 +807,10 @@
         }
 
         async function loadLeads() {
+            const emptyState = document.getElementById('emptyState');
+            emptyState.innerHTML = '<div style="text-align: center;"><svg style="width: 24px; height: 24px; color: var(--femo-gold); animation: spin 1s linear infinite; margin: 0 auto 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2" stroke-dasharray="15.7" stroke-dashoffset="0"></circle></svg><p>Carregando leads...</p></div>';
+            emptyState.style.display = 'block';
+
             try {
                 const { data, error } = await client.from('leads').select('*').order('data_criacao', { ascending: false });
                 if (error) throw error;
@@ -689,7 +819,8 @@
                 updateStats();
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao carregar dados');
+                emptyState.innerHTML = '<div style="text-align: center;"><p style="color: #b54848; margin-bottom: 1rem;">Erro ao conectar com o banco de dados. Verifique sua conexão.</p><button onclick="loadLeads()" class="btn-primary">Tentar novamente</button></div>';
+                showToast('✗ Erro ao carregar dados', 'error');
             }
         }
 
@@ -699,6 +830,7 @@
 
             if (leads.length === 0) {
                 tbody.innerHTML = '';
+                emptyState.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--femo-tan);"><p>Nenhum lead cadastrado ainda</p></div>';
                 emptyState.style.display = 'block';
                 return;
             }
@@ -753,6 +885,9 @@
             document.getElementById('modal_protocolo').textContent = currentLead.protocolo_autorais || '-';
             document.getElementById('modal_pacientes').textContent = currentLead.pacientes_carreira || '-';
             document.getElementById('modal_faturamento').textContent = currentLead.faturamento_mensal || '-';
+            if (document.getElementById('modal_experiencia')) {
+                document.getElementById('modal_experiencia').textContent = currentLead.experiencia_trafego || '-';
+            }
             document.getElementById('modal_status').value = currentLead.status || 'novo';
             document.getElementById('modal_notas').value = currentLead.notas || '';
             document.getElementById('modal_data').textContent = new Date(currentLead.data_criacao).toLocaleDateString('pt-BR');
@@ -770,33 +905,62 @@
             const status = document.getElementById('modal_status').value;
             const notas = document.getElementById('modal_notas').value;
 
-            try {
-                const { error } = await client.from('leads').update({ status, notas }).eq('id', currentLead.id);
-                if (error) throw error;
-                alert('Lead atualizado!');
-                closeModal();
-                loadLeads();
-            } catch (error) {
-                console.error('Erro:', error);
-                alert('Erro ao salvar');
-            }
+            const confirmBanner = document.createElement('div');
+            confirmBanner.style.cssText = 'background: rgba(244, 200, 66, 0.15); border-left: 3px solid #f4c842; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;';
+            confirmBanner.innerHTML = '<span>Salvar alterações para este lead?</span><div style="display: flex; gap: 0.75rem;"><button onclick="confirmSaveLead()" class="btn-primary" style="padding: 0.375rem 0.75rem; font-size: 0.75rem;">Confirmar</button><button onclick="cancelSaveLead()" class="btn-secondary" style="padding: 0.375rem 0.75rem; font-size: 0.75rem;">Cancelar</button></div>';
+
+            const modalContent = document.querySelector('.modal-content');
+            modalContent.insertBefore(confirmBanner, modalContent.firstChild);
+
+            window.confirmSaveLead = async function() {
+                try {
+                    const { error } = await client.from('leads').update({ status, notas }).eq('id', currentLead.id);
+                    if (error) throw error;
+                    showToast('✓ Lead atualizado com sucesso!', 'success');
+                    confirmBanner.remove();
+                    closeModal();
+                    loadLeads();
+                } catch (error) {
+                    console.error('Erro:', error);
+                    showToast('✗ Erro ao salvar', 'error');
+                    confirmBanner.remove();
+                }
+            };
+
+            window.cancelSaveLead = function() {
+                confirmBanner.remove();
+            };
         }
 
         function exportCSV() {
-            if (allLeads.length === 0) { alert('Nenhum dado'); return; }
-            const headers = ['Nome', 'Instagram', 'WhatsApp', 'Especialidade', 'Faturamento', 'Status', 'Notas', 'Data'];
+            if (allLeads.length === 0) {
+                showToast('✗ Nenhum dado para exportar', 'error');
+                return;
+            }
+            const headers = ['Nome', 'Instagram', 'WhatsApp', 'Especialidade', 'Tempo de Atuação', 'Protocolo Autoral', 'Pacientes na Carreira', 'Faturamento', 'Experiência em Tráfego', 'Status', 'Notas', 'Data'];
             const rows = allLeads.map(l => [
-                l.nome_completo || '', l.instagram || '', l.whatsapp || '', l.especialidade || '',
-                l.faturamento_mensal || '', l.status || 'novo', l.notas || '', new Date(l.data_criacao).toLocaleDateString('pt-BR')
+                l.nome_completo || '',
+                l.instagram || '',
+                l.whatsapp || '',
+                l.especialidade || '',
+                l.tempo_atuacao || '',
+                l.protocolo_autorais || '',
+                l.pacientes_carreira || '',
+                l.faturamento_mensal || '',
+                l.experiencia_trafego || '',
+                l.status || 'novo',
+                l.notas || '',
+                new Date(l.data_criacao).toLocaleDateString('pt-BR')
             ]);
             let csv = headers.join(',') + '\n';
             rows.forEach(row => csv += row.map(c => `"${c}"`).join(',') + '\n');
-            const blob = new Blob([csv], { type: 'text/csv' });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             a.download = `leads_${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
+            showToast('✓ CSV exportado com sucesso!', 'success');
         }
 
         document.getElementById('loginBtn').addEventListener('click', login);
