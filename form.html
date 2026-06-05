@@ -761,13 +761,19 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbnlhaWVxY3l5emxiYnBsa3BzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODI5MDAsImV4cCI6MjA5NDE1ODkwMH0.7ETofZqiJrCn1T-H4jK3BeRbvohdS8KgJr8l4yMe1Cw';
 
         // Aguardar o Supabase carregar
+        let supabase = null;
+        let initAttempts = 0;
+
         function initSupabase() {
-            if (window.supabase) {
+            if (window.supabase && window.supabase.createClient) {
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                 console.log('✓ Supabase inicializado');
+            } else if (initAttempts < 50) {
+                initAttempts++;
+                console.warn('⚠ Supabase ainda não carregado, tentando novamente... (' + initAttempts + '/50)');
+                setTimeout(initSupabase, 200);
             } else {
-                console.warn('⚠ Supabase ainda não carregado, tentando novamente...');
-                setTimeout(initSupabase, 100);
+                console.error('✗ Falha ao carregar Supabase após 50 tentativas');
             }
         }
 
