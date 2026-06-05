@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Protocolo 24</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --femo-gold: #eba136;
+            --femo-brown: #684a29;
+            --femo-tan: #a98360;
+            --femo-dark: #2e200c;
+            --femo-light: #e3e2de;
+            --status-novo: #f4c842;
+            --status-contatado: #3b82a8;
+            --status-qualificado: #5a8a4a;
+            --status-descartado: #b54848;
+            --shadow-sm: 0 2px 8px rgba(46, 32, 12, 0.08);
+            --shadow-md: 0 8px 24px rgba(46, 32, 12, 0.12);
+            --transition: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+            --radius: 12px;
+        }
+
+        * { font-family: 'Inter', -apple-system, sans-serif; }
+
+        body {
+            background: var(--femo-light);
+            color: var(--femo-dark);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--femo-dark) 0%, var(--femo-brown) 100%);
+            padding: 2rem;
+            border-bottom: 3px solid var(--femo-gold);
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        .admin-header h1 {
+            color: #fff;
+            font-weight: 800;
+            font-size: 2rem;
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+
+        .admin-header .subtitle {
+            color: var(--femo-gold);
+            font-weight: 500;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            letter-spacing: 0.02em;
+        }
+
+        .admin-header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-logout {
+            background: #b54848;
+            color: white;
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 0.875rem;
+        }
+
+        .btn-logout:hover {
+            background: #8a3636;
+            transform: translateY(-1px);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--femo-light);
+            border: 1px solid rgba(104, 74, 41, 0.1);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: transform var(--transition), box-shadow var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--femo-gold);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: scale(1.02) translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card .label {
+            color: var(--femo-brown);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .stat-card .value {
+            color: var(--femo-dark);
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin-top: 0.5rem;
+            line-height: 1;
+        }
+
+        .filters {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(104, 74, 41, 0.08);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        input, select {
+            padding: 0.625rem 1rem;
+            border: 2px solid rgba(104, 74, 41, 0.15);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            transition: border-color var(--transition);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--femo-gold);
+            box-shadow: 0 0 0 3px rgba(235, 161, 54, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--femo-gold);
+            color: var(--femo-dark);
+            font-weight: 600;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 0.875rem;
+            letter-spacing: 0.01em;
+        }
+
+        .btn-primary:hover {
+            background: #d8902c;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(235, 161, 54, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--femo-tan);
+            color: white;
+            font-weight: 600;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 0.875rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--femo-brown);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .table-wrapper {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(104, 74, 41, 0.08);
+            overflow: hidden;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--femo-dark);
+        }
+
+        th {
+            color: var(--femo-gold);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 1rem 1.25rem;
+            text-align: left;
+        }
+
+        td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--femo-light);
+            color: var(--femo-dark);
+            font-size: 0.875rem;
+        }
+
+        tbody tr {
+            transition: background var(--transition);
+        }
+
+        tbody tr:hover {
+            background: rgba(235, 161, 54, 0.05);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .badge-novo {
+            background: rgba(244, 200, 66, 0.15);
+            color: #8a6d10;
+        }
+
+        .badge-contatado {
+            background: rgba(59, 130, 168, 0.15);
+            color: #1e5a7a;
+        }
+
+        .badge-qualificado {
+            background: rgba(90, 138, 74, 0.15);
+            color: #3a5e2c;
+        }
+
+        .badge-descartado {
+            background: rgba(181, 72, 72, 0.15);
+            color: #7a2828;
+        }
+
+        .btn-view {
+            background: var(--femo-gold);
+            color: var(--femo-dark);
+            padding: 0.375rem 0.75rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .btn-view:hover {
+            background: #d8902c;
+            transform: translateY(-1px);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(46, 32, 12, 0.65);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            animation: overlayFade 200ms ease-out;
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 16px 40px rgba(46, 32, 12, 0.18);
+            animation: modalEnter 280ms cubic-bezier(0.16, 1, 0.3, 1);
+            border-top: 4px solid var(--femo-gold);
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--femo-light);
+        }
+
+        .modal-header h2 {
+            color: var(--femo-dark);
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--femo-brown);
+            transition: color var(--transition);
+        }
+
+        .close-btn:hover {
+            color: var(--femo-dark);
+        }
+
+        .modal-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-section h3 {
+            color: var(--femo-dark);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 1rem;
+            color: var(--femo-brown);
+        }
+
+        .modal-field {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-field.full {
+            grid-template-columns: 1fr;
+        }
+
+        .field-label {
+            font-size: 0.75rem;
+            color: var(--femo-brown);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            margin-bottom: 0.375rem;
+        }
+
+        .field-value {
+            font-size: 0.875rem;
+            color: var(--femo-dark);
+            font-weight: 500;
+        }
+
+        .field-value a {
+            color: var(--femo-gold);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color var(--transition);
+        }
+
+        .field-value a:hover {
+            color: #d8902c;
+        }
+
+        textarea {
+            font-family: 'Inter', sans-serif;
+            padding: 0.625rem 1rem;
+            border: 2px solid rgba(104, 74, 41, 0.15);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: border-color var(--transition);
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--femo-gold);
+            box-shadow: 0 0 0 3px rgba(235, 161, 54, 0.1);
+        }
+
+        .modal-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--femo-light);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--femo-brown);
+        }
+
+        @keyframes overlayFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalEnter {
+            from { opacity: 0; transform: scale(0.92) translateY(12px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--femo-light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--femo-tan);
+            border-radius: 999px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--femo-brown);
+        }
+    </style>
+</head>
+<body>
+    <div id="loginModal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2>Acesso Admin</h2>
+            </div>
+            <input type="password" id="passwordInput" placeholder="Digite a senha" autofocus>
+            <button id="loginBtn" class="btn-primary" style="width: 100%; margin-top: 1rem;">Acessar Painel</button>
+        </div>
+    </div>
+
+    <div id="mainContent" class="hidden" style="display: none;">
+        <div class="admin-header">
+            <div class="admin-header-content">
+                <div>
+                    <h1>Protocolo 24</h1>
+                    <p class="subtitle">Painel de Administração de Leads</p>
+                </div>
+                <button id="logoutBtn" class="btn-logout">🚪 Sair</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <p class="label">Total de Leads</p>
+                    <p class="value" id="totalLeads">0</p>
+                </div>
+                <div class="stat-card">
+                    <p class="label">Últimas 24h</p>
+                    <p class="value" id="todayLeads">0</p>
+                </div>
+                <div class="stat-card">
+                    <p class="label">Contatados</p>
+                    <p class="value" id="contatados">0</p>
+                </div>
+                <div class="stat-card">
+                    <p class="label">Qualificados</p>
+                    <p class="value" id="qualificados">0</p>
+                </div>
+            </div>
+
+            <div class="filters">
+                <div class="filters-grid">
+                    <input type="text" id="searchInput" placeholder="Buscar nome...">
+                    <select id="statusFilter">
+                        <option value="">Todos Status</option>
+                        <option value="novo">Novo</option>
+                        <option value="contatado">Contatado</option>
+                        <option value="qualificado">Qualificado</option>
+                        <option value="descartado">Descartado</option>
+                    </select>
+                    <button id="exportBtn" class="btn-primary">📥 Exportar</button>
+                    <button id="refreshBtn" class="btn-secondary">🔄 Atualizar</button>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <div class="table-container">
+                    <table id="leadsTable">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Instagram</th>
+                                <th>WhatsApp</th>
+                                <th>Especialidade</th>
+                                <th>Faturamento</th>
+                                <th>Status</th>
+                                <th>Data</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leadsBody">
+                        </tbody>
+                    </table>
+                </div>
+                <div id="emptyState" class="empty-state">
+                    <p>Carregando dados...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="detailsModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Detalhes do Lead</h2>
+                <button id="closeModalBtn" class="close-btn">✕</button>
+            </div>
+
+            <div class="modal-section">
+                <h3>Informações Básicas</h3>
+                <div class="modal-field">
+                    <div>
+                        <p class="field-label">Nome Completo</p>
+                        <p class="field-value" id="modal_nome">-</p>
+                    </div>
+                    <div>
+                        <p class="field-label">Instagram</p>
+                        <p class="field-value"><a id="modal_instagram" href="#" target="_blank">-</a></p>
+                    </div>
+                    <div>
+                        <p class="field-label">WhatsApp</p>
+                        <p class="field-value"><a id="modal_whatsapp" href="#" target="_blank">-</a></p>
+                    </div>
+                    <div>
+                        <p class="field-label">Especialidade</p>
+                        <p class="field-value" id="modal_especialidade">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-section">
+                <h3>Informações Profissionais</h3>
+                <div class="modal-field">
+                    <div>
+                        <p class="field-label">Tempo de Atuação</p>
+                        <p class="field-value" id="modal_tempo">-</p>
+                    </div>
+                    <div>
+                        <p class="field-label">Protocolo Autoral</p>
+                        <p class="field-value" id="modal_protocolo">-</p>
+                    </div>
+                    <div>
+                        <p class="field-label">Pacientes</p>
+                        <p class="field-value" id="modal_pacientes">-</p>
+                    </div>
+                    <div>
+                        <p class="field-label">Faturamento</p>
+                        <p class="field-value" id="modal_faturamento">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-section">
+                <h3>Gerenciamento</h3>
+                <div class="modal-field full">
+                    <div>
+                        <p class="field-label">Status</p>
+                        <select id="modal_status" style="width: 100%;">
+                            <option value="novo">🔵 Novo</option>
+                            <option value="contatado">🟡 Contatado</option>
+                            <option value="qualificado">🟢 Qualificado</option>
+                            <option value="descartado">🔴 Descartado</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-field full">
+                    <div>
+                        <p class="field-label">Notas Internas</p>
+                        <textarea id="modal_notas" rows="4" placeholder="Adicione notas sobre este lead..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <p style="font-size: 0.75rem; color: var(--femo-brown); margin-bottom: 1rem;">
+                Cadastrado em: <span id="modal_data" style="font-weight: bold;">-</span>
+            </p>
+
+            <div class="modal-actions">
+                <button id="saveLeadBtn" class="btn-primary">💾 Salvar</button>
+                <button id="closeModalBtn2" class="btn-secondary">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://vdnyaieqcyyzlbbplkps.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbnlhaWVxY3l5emxiYnBsa3BzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODI5MDAsImV4cCI6MjA5NDE1ODkwMH0.7ETofZqiJrCn1T-H4jK3BeRbvohdS8KgJr8l4yMe1Cw';
+        const ADMIN_PASSWORD = 'Femo123';
+
+        const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        let allLeads = [];
+        let currentLead = null;
+
+        function login() {
+            const pwd = document.getElementById('passwordInput').value;
+            if (pwd === ADMIN_PASSWORD) {
+                localStorage.setItem('admin_auth', 'true');
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                loadLeads();
+            } else {
+                alert('Senha incorreta!');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('admin_auth');
+            location.reload();
+        }
+
+        async function loadLeads() {
+            try {
+                const { data, error } = await client.from('leads').select('*').order('data_criacao', { ascending: false });
+                if (error) throw error;
+                allLeads = data || [];
+                renderTable(allLeads);
+                updateStats();
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao carregar dados');
+            }
+        }
+
+        function renderTable(leads) {
+            const tbody = document.getElementById('leadsBody');
+            const emptyState = document.getElementById('emptyState');
+
+            if (leads.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            tbody.innerHTML = leads.map(lead => {
+                const status = lead.status || 'novo';
+                const statusLabel = {
+                    'novo': '🔵 Novo',
+                    'contatado': '🟡 Contatado',
+                    'qualificado': '🟢 Qualificado',
+                    'descartado': '🔴 Descartado'
+                }[status] || '🔵 Novo';
+
+                const badgeClass = `badge-${status}`;
+
+                return `
+                    <tr>
+                        <td>${lead.nome_completo || '-'}</td>
+                        <td><a href="https://instagram.com/${lead.instagram?.replace('@', '') || ''}" target="_blank" style="color: var(--femo-gold);">${lead.instagram || '-'}</a></td>
+                        <td><a href="https://wa.me/55${lead.whatsapp?.replace(/\D/g, '')}" target="_blank" style="color: var(--femo-gold);">${lead.whatsapp || '-'}</a></td>
+                        <td>${lead.especialidade || '-'}</td>
+                        <td>${lead.faturamento_mensal || '-'}</td>
+                        <td><span class="badge ${badgeClass}">${statusLabel}</span></td>
+                        <td>${new Date(lead.data_criacao).toLocaleDateString('pt-BR')}</td>
+                        <td><button onclick="openModal(${lead.id})" class="btn-view">Ver</button></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('totalLeads').textContent = allLeads.length;
+            const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+            const todayLeads = allLeads.filter(l => new Date(l.data_criacao) > oneDayAgo).length;
+            document.getElementById('todayLeads').textContent = todayLeads;
+            document.getElementById('contatados').textContent = allLeads.filter(l => l.status === 'contatado').length;
+            document.getElementById('qualificados').textContent = allLeads.filter(l => l.status === 'qualificado').length;
+        }
+
+        function openModal(id) {
+            currentLead = allLeads.find(l => l.id === id);
+            if (!currentLead) return;
+
+            document.getElementById('modal_nome').textContent = currentLead.nome_completo || '-';
+            document.getElementById('modal_instagram').href = `https://instagram.com/${currentLead.instagram?.replace('@', '') || ''}`;
+            document.getElementById('modal_instagram').textContent = currentLead.instagram || '-';
+            document.getElementById('modal_whatsapp').href = `https://wa.me/55${currentLead.whatsapp?.replace(/\D/g, '')}`;
+            document.getElementById('modal_whatsapp').textContent = currentLead.whatsapp || '-';
+            document.getElementById('modal_especialidade').textContent = currentLead.especialidade || '-';
+            document.getElementById('modal_tempo').textContent = currentLead.tempo_atuacao || '-';
+            document.getElementById('modal_protocolo').textContent = currentLead.protocolo_autorais || '-';
+            document.getElementById('modal_pacientes').textContent = currentLead.pacientes_carreira || '-';
+            document.getElementById('modal_faturamento').textContent = currentLead.faturamento_mensal || '-';
+            document.getElementById('modal_status').value = currentLead.status || 'novo';
+            document.getElementById('modal_notas').value = currentLead.notas || '';
+            document.getElementById('modal_data').textContent = new Date(currentLead.data_criacao).toLocaleDateString('pt-BR');
+
+            document.getElementById('detailsModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('detailsModal').classList.add('hidden');
+            currentLead = null;
+        }
+
+        async function saveLead() {
+            if (!currentLead) return;
+            const status = document.getElementById('modal_status').value;
+            const notas = document.getElementById('modal_notas').value;
+
+            try {
+                const { error } = await client.from('leads').update({ status, notas }).eq('id', currentLead.id);
+                if (error) throw error;
+                alert('Lead atualizado!');
+                closeModal();
+                loadLeads();
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao salvar');
+            }
+        }
+
+        function exportCSV() {
+            if (allLeads.length === 0) { alert('Nenhum dado'); return; }
+            const headers = ['Nome', 'Instagram', 'WhatsApp', 'Especialidade', 'Faturamento', 'Status', 'Notas', 'Data'];
+            const rows = allLeads.map(l => [
+                l.nome_completo || '', l.instagram || '', l.whatsapp || '', l.especialidade || '',
+                l.faturamento_mensal || '', l.status || 'novo', l.notas || '', new Date(l.data_criacao).toLocaleDateString('pt-BR')
+            ]);
+            let csv = headers.join(',') + '\n';
+            rows.forEach(row => csv += row.map(c => `"${c}"`).join(',') + '\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `leads_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+        }
+
+        document.getElementById('loginBtn').addEventListener('click', login);
+        document.getElementById('passwordInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') login(); });
+        document.getElementById('logoutBtn').addEventListener('click', logout);
+        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+        document.getElementById('closeModalBtn2').addEventListener('click', closeModal);
+        document.getElementById('saveLeadBtn').addEventListener('click', saveLead);
+        document.getElementById('exportBtn').addEventListener('click', exportCSV);
+        document.getElementById('refreshBtn').addEventListener('click', loadLeads);
+        document.getElementById('searchInput').addEventListener('keyup', () => {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allLeads.filter(l => (l.nome_completo || '').toLowerCase().includes(term));
+            renderTable(filtered);
+        });
+        document.getElementById('statusFilter').addEventListener('change', () => {
+            const status = document.getElementById('statusFilter').value;
+            const filtered = status ? allLeads.filter(l => (l.status || 'novo') === status) : allLeads;
+            renderTable(filtered);
+        });
+
+        if (localStorage.getItem('admin_auth') === 'true') {
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            loadLeads();
+        }
+    </script>
+</body>
+</html>
