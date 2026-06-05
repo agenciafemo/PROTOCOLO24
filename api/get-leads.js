@@ -20,24 +20,34 @@ module.exports = async function handler(req, res) {
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    console.log('Conectando ao Supabase...');
+    console.log('URL:', SUPABASE_URL);
+
     // Buscar todos os leads ordenados por data de criação (decrescente)
     const { data, error } = await supabase
       .from('leads')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .select('*');
 
     if (error) {
-      console.error('Erro ao buscar leads:', error);
-      return res.status(400).json({ error: error.message });
+      console.error('❌ Erro ao buscar leads:', error);
+      return res.status(400).json({
+        error: error.message,
+        details: error,
+        hint: 'Verifique se a tabela "leads" existe no Supabase'
+      });
     }
 
     console.log('✓ Leads buscados:', data?.length || 0);
     return res.status(200).json({
       success: true,
-      data: data || []
+      data: data || [],
+      count: data?.length || 0
     });
   } catch (error) {
-    console.error('Erro:', error);
-    return res.status(500).json({ error: error.message });
+    console.error('❌ Erro geral:', error);
+    return res.status(500).json({
+      error: error.message,
+      type: error.name
+    });
   }
 };
