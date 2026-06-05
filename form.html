@@ -521,7 +521,17 @@
 
         function selectOption(field, value) {
             formData[field] = value;
-            nextStep();
+
+            // Remove selected class de todos os botões
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            // Adiciona selected ao botão clicado
+            event.target.closest('.option-btn').classList.add('selected');
+
+            // Aguarda um pouco para o usuário ver a seleção
+            setTimeout(() => nextStep(), 300);
         }
 
         function setupWhatsAppInput() {
