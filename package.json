@@ -1,0 +1,17 @@
+{
+  "name": "protocolo24",
+  "version": "1.0.0",
+  "description": "Protocolo 24 - Landing Page and Form",
+  "main": "index.html",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static site - no build needed'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
