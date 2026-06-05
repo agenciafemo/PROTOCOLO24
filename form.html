@@ -570,13 +570,19 @@
 
             try {
                 console.log('Enviando dados:', formData);
+                console.log('Supabase client:', supabase ? 'Inicializado' : 'NÃO inicializado');
 
                 // Enviar direto para Supabase
                 const { data, error } = await supabase.from('leads').insert([formData]);
 
                 if (error) {
-                    console.error('Erro Supabase:', error);
-                    throw new Error(error.message);
+                    console.error('❌ Erro Supabase detalhado:', {
+                        message: error.message,
+                        code: error.code,
+                        details: error.details,
+                        hint: error.hint
+                    });
+                    throw new Error(`Erro Supabase: ${error.message}`);
                 }
 
                 console.log('✓ Dados enviados com sucesso para Supabase:', data);
@@ -589,8 +595,8 @@
                     window.location.href = 'index.html';
                 }, 1000);
             } catch (error) {
-                console.error('Erro completo:', error);
-                alert('✓ Obrigado!\n\nSeu formulário foi recebido com sucesso.\n\nEntraremos em contato em breve!');
+                console.error('❌ Erro completo ao enviar:', error.message || error);
+                alert('❌ ' + (error.message || 'Erro ao enviar formulário') + '\n\nVerifique o console (F12) para mais detalhes.');
 
                 // Voltar para a página inicial mesmo com erro
                 setTimeout(() => {
