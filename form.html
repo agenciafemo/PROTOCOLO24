@@ -549,6 +549,11 @@
         }
 
         async function submitForm() {
+            if (!supabase) {
+                alert('Erro: Supabase não inicializado. Tente novamente em alguns segundos.');
+                return;
+            }
+
             document.getElementById('resumoNome').textContent = formData.nome_completo;
             document.getElementById('resumoWhatsapp').textContent = formData.whatsapp;
             document.getElementById('resumoEspecialidade').textContent = formData.especialidade;
@@ -556,22 +561,15 @@
             try {
                 console.log('Enviando dados:', formData);
 
-                // Enviar para a API serverless do Vercel
-                const response = await fetch('/api/submit-form', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
+                // Enviar direto para Supabase
+                const { data, error } = await supabase.from('leads').insert([formData]);
 
-                const result = await response.json();
-
-                if (!response.ok) {
-                    console.warn('Aviso ao enviar:', result.error);
-                } else {
-                    console.log('✓ Dados enviados com sucesso para Supabase');
+                if (error) {
+                    console.error('Erro Supabase:', error);
+                    throw new Error(error.message);
                 }
+
+                console.log('✓ Dados enviados com sucesso para Supabase:', data);
 
                 // Mostrar popup de sucesso
                 alert('✓ Obrigado!\n\nSeu formulário foi recebido com sucesso.\n\nEntraremos em contato em breve!');
@@ -581,7 +579,7 @@
                     window.location.href = 'index.html';
                 }, 1000);
             } catch (error) {
-                console.error('Erro:', error);
+                console.error('Erro completo:', error);
                 alert('✓ Obrigado!\n\nSeu formulário foi recebido com sucesso.\n\nEntraremos em contato em breve!');
 
                 // Voltar para a página inicial mesmo com erro
@@ -776,22 +774,26 @@
         const SUPABASE_URL = 'https://vdnyaieqcyyzlbbplkps.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbnlhaWVxY3l5emxiYnBsa3BzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODI5MDAsImV4cCI6MjA5NDE1ODkwMH0.7ETofZqiJrCn1T-H4jK3BeRbvohdS8KgJr8l4yMe1Cw';
 
-        // Aguardar o Supabase carregar
-        let supabase = null;
-        let initAttempts = 0;
-
+        // Inicializar Supabase imediatamente
         function initSupabase() {
             if (window.supabase && window.supabase.createClient) {
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                 console.log('✓ Supabase inicializado');
-            } else if (initAttempts < 50) {
-                initAttempts++;
-                console.warn('⚠ Supabase ainda não carregado, tentando novamente... (' + initAttempts + '/50)');
-                setTimeout(initSupabase, 200);
-            } else {
-                console.error('✗ Falha ao carregar Supabase após 50 tentativas');
+                return true;
             }
+            return false;
         }
+
+        // Tentar inicializar quando o script carregar
+        let attempts = 0;
+        const checkInterval = setInterval(function() {
+            if (initSupabase()) {
+                clearInterval(checkInterval);
+            } else if (attempts++ > 50) {
+                clearInterval(checkInterval);
+                console.error('✗ Falha ao carregar Supabase');
+            }
+        }, 100);
 
         // Inicializar quando o documento estiver pronto
         document.addEventListener('DOMContentLoaded', function() {
