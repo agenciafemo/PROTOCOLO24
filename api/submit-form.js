@@ -1,5 +1,3 @@
-const { createClient } = require('@supabase/supabase-js');
-
 const SUPABASE_URL = 'https://vdnyaieqcyyzlbbplkps.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbnlhaWVxY3l5emxiYnBsa3BzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODI5MDAsImV4cCI6MjA5NDE1ODkwMH0.7ETofZqiJrCn1T-H4jK3BeRbvohdS8KgJr8l4yMe1Cw';
 
@@ -19,19 +17,26 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
     const formData = req.body;
 
-    console.log('Recebendo dados:', formData);
+    console.log('Recebendo dados do formulário:', formData);
 
-    // Inserir dados no Supabase
-    const { data, error } = await supabase
-      .from('leads')
-      .insert([formData]);
+    // Usar REST API do Supabase diretamente
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/leads`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      },
+      body: JSON.stringify(formData)
+    });
 
-    if (error) {
-      console.error('Erro Supabase:', error);
-      return res.status(400).json({ error: error.message });
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('Erro Supabase:', data);
+      return res.status(response.status).json({ error: data.message || 'Erro ao salvar dados' });
     }
 
     console.log('✓ Dados salvos no Supabase:', data);
@@ -41,7 +46,7 @@ module.exports = async function handler(req, res) {
       data
     });
   } catch (error) {
-    console.error('Erro:', error);
+    console.error('Erro:', error.message);
     return res.status(500).json({ error: error.message });
   }
 };
