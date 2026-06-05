@@ -16,10 +16,11 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    console.log('Buscando leads do Supabase...');
+    console.log('🔍 Tentando conectar ao Supabase...');
+    console.log('URL:', SUPABASE_URL);
 
-    // Usar REST API do Supabase diretamente
-    const response = await fetch(`${SUPABASE_URL}/rest/v1/leads?order=created_at.desc`, {
+    // Tentar buscar da tabela 'leads'
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/leads`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -28,24 +29,33 @@ module.exports = async function handler(req, res) {
       }
     });
 
+    console.log('📊 Status da resposta:', response.status);
+
     const data = await response.json();
+    console.log('📦 Dados recebidos:', data);
 
     if (!response.ok) {
-      console.error('❌ Erro ao buscar leads:', data);
-      return res.status(response.status).json({
-        error: data.message || 'Erro ao buscar dados'
+      console.error('❌ Erro Supabase:', data);
+      // Se a tabela não existe, retornar array vazio
+      return res.status(200).json({
+        success: false,
+        data: [],
+        message: 'Nenhum dado disponível ainda',
+        error: data
       });
     }
 
-    console.log('✓ Leads buscados:', data?.length || 0);
+    console.log('✓ Leads buscados com sucesso:', Array.isArray(data) ? data.length : 0);
     return res.status(200).json({
       success: true,
       data: Array.isArray(data) ? data : [],
       count: Array.isArray(data) ? data.length : 0
     });
   } catch (error) {
-    console.error('❌ Erro:', error.message);
-    return res.status(500).json({
+    console.error('❌ Erro geral:', error.message);
+    return res.status(200).json({
+      success: false,
+      data: [],
       error: error.message
     });
   }
