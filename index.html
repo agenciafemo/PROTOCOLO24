@@ -199,25 +199,12 @@
                     <!-- Moldura Premium e Container Principal -->
                     <div class="relative bg-gradient-to-b from-brand-brown to-brand-dark p-1.5 rounded-[28px] shadow-2xl border border-brand-gold/40">
                         <div class="relative rounded-[22px] overflow-hidden aspect-[9/16] border border-black/40 shadow-inner">
-                            <video
-                                id="heroVideo" controls muted playsinline preload="auto" autoplay loop
-                                class="w-full h-full absolute inset-0 object-cover bg-black">
-                                <source src="https://stream.mux.com/YRq6OlFKOlPnygcFYqkk85UFDeuDN5ZVLajdjVlzFLw.m3u8" type="application/x-mpegURL">
-                                Seu navegador não suporta o elemento de vídeo.
-                            </video>
-                            
-                            <!-- Controle de Som Customizado -->
-                            <button id="muteToggleBtn" class="absolute top-4 right-4 z-30 w-10 h-10 flex items-center justify-center rounded-full bg-brand-dark/70 backdrop-blur-md border border-brand-gold/40 shadow-[0_4px_12px_rgba(0,0,0,0.5)] text-brand-gold hover:bg-brand-dark/90 hover:scale-105 active:scale-95 transition-all duration-300" aria-label="Alternar som">
-                                <!-- Ícone Muted -->
-                                <svg id="iconMuted" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
-                                </svg>
-                                <!-- Ícone Unmuted -->
-                                <svg id="iconUnmuted" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
-                                </svg>
-                            </button>
+                            <iframe
+                              src="https://player.mux.com/YRq601FKOlPnygcFYqkki85UFDeuDN5ZVLajdjVlzFLw?metadata-video-title=Ghedin_resultado_v%C3%ADdeo&video-title=Ghedin_resultado_v%C3%ADdeo"
+                              style="width: 100%; height: 100%; border: none;"
+                              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                              allowfullscreen>
+                            </iframe>
                         </div>
 
                         <!-- Selo de Resultado Real (Badge) -->
@@ -262,18 +249,12 @@
                 <!-- Moldura Premium e Container Principal (16:9) -->
                 <div class="relative bg-gradient-to-b from-brand-brown to-brand-dark p-1.5 rounded-[28px] shadow-2xl border border-brand-gold/40">
                     <div class="relative rounded-[22px] overflow-hidden aspect-video border border-black/40 shadow-inner bg-black flex items-center justify-center">
-                        <video
-                            id="mainVideo"
-                            controls playsinline preload="metadata"
-                            class="w-full h-full absolute inset-0 object-cover">
-                            <source src="https://stream.mux.com/3Mu02XrY005xcHNcec2w400WMWPI2dErUwBVk01C0la7Jxcl.m3u8" type="application/x-mpegURL">
-                            Seu navegador não suporta o elemento de vídeo.
-                        </video>
-
-                        <!-- Timeline animada de progresso rápido -->
-                        <div class="absolute bottom-12 left-0 w-full h-1 bg-gray-800 z-50" id="videoTimeline" style="display: none;">
-                            <div class="h-full bg-gradient-to-r from-brand-gold to-brand-medium" id="videoProgressBar" style="width: 0%;"></div>
-                        </div>
+                        <iframe
+                          src="https://player.mux.com/3Mu02XrY005xcHNcec2w400WMWP12dErUwBVk01C01a7JxcI?metadata-video-title=PROTOCOLO+24&video-title=PROTOCOLO+24"
+                          style="width: 100%; height: 100%; border: none;"
+                          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                          allowfullscreen>
+                        </iframe>
                     </div>
                 </div>
             </div>
