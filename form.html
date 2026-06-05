@@ -554,18 +554,23 @@
             document.getElementById('resumoEspecialidade').textContent = formData.especialidade;
 
             try {
-                console.log('Dados do formulário:', formData);
+                console.log('Enviando dados:', formData);
 
-                // Tentar enviar para Supabase se estiver disponível
-                if (supabase && supabase.from) {
-                    const { data, error } = await supabase.from('leads').insert([formData]);
-                    if (error) {
-                        console.warn('Aviso Supabase:', error.message);
-                    } else {
-                        console.log('✓ Dados enviados para Supabase');
-                    }
+                // Enviar para a API serverless do Vercel
+                const response = await fetch('/api/submit-form', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    console.warn('Aviso ao enviar:', result.error);
                 } else {
-                    console.log('ℹ Supabase não disponível, mas formulário foi preenchido');
+                    console.log('✓ Dados enviados com sucesso para Supabase');
                 }
 
                 // Mostrar tela de sucesso independentemente
