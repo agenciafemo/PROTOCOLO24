@@ -573,21 +573,21 @@
                     console.log('✓ Dados enviados com sucesso para Supabase');
                 }
 
-                // Mostrar tela de sucesso independentemente
-                document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
-                document.getElementById('successScreen').classList.add('active');
+                // Mostrar popup de sucesso
+                alert('✓ Obrigado!\n\nSeu formulário foi recebido com sucesso.\n\nEntraremos em contato em breve!');
 
+                // Voltar para a página inicial
                 setTimeout(() => {
-                    window.location.href = 'admin.html';
-                }, 3000);
+                    window.location.href = 'index.html';
+                }, 1000);
             } catch (error) {
                 console.error('Erro:', error);
-                alert('✓ Formulário preenchido com sucesso!\n\nVocê será redirecionado em instantes.');
+                alert('✓ Obrigado!\n\nSeu formulário foi recebido com sucesso.\n\nEntraremos em contato em breve!');
 
-                // Redirecionar mesmo com erro para não perder o lead
+                // Voltar para a página inicial mesmo com erro
                 setTimeout(() => {
-                    window.location.href = 'admin.html';
-                }, 2000);
+                    window.location.href = 'index.html';
+                }, 1000);
             }
         }
     </script>
